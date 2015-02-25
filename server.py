@@ -4,9 +4,7 @@ __author__ = 'Dos Santos Julien'
 from flask import Flask
 from config import connexion, curseur
 from models import User
-from functions import serialiseur_perso
 import jsonpickle
-import json
 
 app = Flask(__name__)
 
