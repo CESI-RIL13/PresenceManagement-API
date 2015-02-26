@@ -10,4 +10,4 @@ connexion = MySQLdb.connect(host="localhost", # your host, usually localhost
 
 # you must create a Cursor object. It will let
 #  you execute all the queries you need
-curseur = connexion.cursor()
+curseur = connexion.cursor(MySQLdb.cursors.DictCursor)
