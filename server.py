@@ -10,7 +10,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def hello():
-    return 'hello'
+    print datetime.strptime(request.headers.get('If-Modified-Since'), "%d %b %Y %H:%M:%S GMT")
+    return 'Circulez il n\'y a rien à voir !'
 
 @app.route('/users/')
 @app.route('/users/<identifiant>')
@@ -21,7 +22,7 @@ def users(identifiant=None):
         user.load()
         return user.asJson()
     else :
-        return jsonpickle.encode(User().search(request.args),unpicklable=False)
+        return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False)
 
 
 @app.route('/presences/')

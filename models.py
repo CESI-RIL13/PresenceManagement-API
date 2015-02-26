@@ -79,29 +79,34 @@ class Entity(object) :
 
         for column in self.__columns:
 
-            if(len(self.__hasOne) > 0 and column.find('_id') > -1 and self.__hasOne.count(column[:column.index('_')])):
-                entity = Entity(column[:column.index('_')])
-                entity.id = datas[self.__columns.index(column)]
-                entity.load()
-                setattr(self,column,entity)
-            else :
-                setattr(self,column,datas[self.__columns.index(column)])
+            # if(len(self.__hasOne) > 0 and column.find('_id') > -1 and self.__hasOne.count(column[:column.index('_')])):
+            #     entity = Entity(column[:column.index('_')])
+            #     entity.id = datas[column]
+            #     entity.load()
+            #     setattr(self,column,entity)
+            # else :
+                setattr(self,column,datas[column])
 
-    def search(self, args = {}):
-        if len(args) == 0:
-            return False
+    def search(self, args = {},lastUpdate = None):
 
         where = []
 
-        request = "SELECT id FROM " + self.__table + " WHERE "
+        request = "SELECT id FROM " + self.__table
         for key in args.keys():
             if self.getColumns().count(key) == 0:
                 continue
             subClause = args[key].split(",")
             where.append(key + " IN ( '" + "' , '".join(subClause) +"' )")
 
-        request += " AND ".join(where)
+        if(lastUpdate != None):
+            date = datetime.strptime(lastUpdate, "%d %b %Y %H:%M:%S GMT")
+            where.append("updated > '" + date.strftime("%Y-%m-%d %H:%M:%S") + "'")
+
+        if(len(where)>0):
+            request += " WHERE " + " AND ".join(where)
+
         print request
+
         curseur.execute(request)
         rows = curseur.fetchall()
 
@@ -113,8 +118,6 @@ class Entity(object) :
             result.append(entity)
 
         return result
-
-
 
     def save(self):
         if self.id == None:
@@ -156,22 +159,30 @@ class Entity(object) :
     #     return '{' + str(self.id) + '} ' + self.name + ' ' + self.email + ' ' + str(self.updated)
 
 class User(Entity) :
-
     def __init__(self):
         Entity.__init__(self,'user')
+        self.setHasOne('promotion')
+        self.setHasMany('presence')
 
-class Presence(object) :
+class Presence(Entity) :
     def __init__(self):
         Entity.__init__(self,'presence')
+        self.setHasOne('user')
+        self.setBelongsTo('user')
 
-class Room(object) :
+class Room(Entity) :
     def __init__(self):
         Entity.__init__(self,'room')
 
-class Promotion(object) :
+class Promotion(Entity) :
     def __init__(self):
         Entity.__init__(self,'promotion')
+        self.setHasMany('scheduling')
 
-class Scheduling(object) :
+class Scheduling(Entity) :
     def __init__(self):
         Entity.__init__(self,'scheduling')
+        self.setHasOne('room')
+        self.setHasOne('promotion')
+        self.setHasOne('user')
+        self.setBelongsTo('promotion')
