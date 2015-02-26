@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = 'Dos Santos Julien'
-from flask import Flask
+from flask import *
 from config import connexion, curseur
-from models import User
+from models import *
 import jsonpickle
 
 app = Flask(__name__)
@@ -19,15 +19,24 @@ def users(identifiant=None):
         user = User()
         user.id = identifiant
         user.load()
-        return jsonpickle.encode(user,unpicklable=False)
+        return user.asJson()
     else :
-        curseur.execute('SELECT * FROM user')
+        return jsonpickle.encode(User().search(request.args),unpicklable=False)
+
+
+@app.route('/presences/')
+@app.route('/presences/<identifiant>')
+def presences(identifiant = None):
+    if identifiant:
+        return jsonpickle.encode(Presence().search(request.args),unpicklable=False)
+    else :
+        curseur.execute('SELECT id FROM presence')
         rows = curseur.fetchall()
         liste_users = []
 
         for row in rows:
             user = User()
-            user.id = row[0]
+            user.id = row['user_id']
             user.load()
             liste_users.append(user)
 
