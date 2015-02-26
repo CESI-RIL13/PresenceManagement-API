@@ -120,13 +120,24 @@ class Entity(object) :
         return result
 
     def save(self):
-        if self.id == None:
-            return False
-
         values = []
 
         for column in self.__columns:
-            values.append(column)
+            if getattr(self, column) == None or column == "updated":
+                continue
+            if type(getattr(self, column)) is datetime:
+                values.append(column + " = '" + getattr(self, column).strftime("%Y-%m-%d %H:%M:%S") + "'")
+            else:
+                values.append(column + " = '" + getattr(self, column) + "'")
+
+        request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
+
+        if curseur.execute(request):
+            self.id = curseur.lastrowid
+
+        connexion.commit()
+
+
 
     def __getstate__(self):
         entity = {}
