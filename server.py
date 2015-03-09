@@ -30,6 +30,7 @@ def users(identifiant=None):
     else :
         if request.method == 'GET':
             return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+
         elif request.method == 'POST' or request.method == 'PUT':
             entities = jsonpickle.decode(request.data)
             users = []
@@ -39,6 +40,7 @@ def users(identifiant=None):
                 user.save()
                 users.append(user.id)
             return jsonpickle.encode(users,unpicklable=False),201
+
 
 @app.route('/presences/', methods = ['GET', 'POST'])
 def presences():
@@ -72,6 +74,7 @@ def promotions(identifiant=None):
     else:
         if request.method == 'GET':
             return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+
         elif request.method == 'POST' or request.method == 'PUT':
             entities = jsonpickle.decode(request.data)
             promotions = []
