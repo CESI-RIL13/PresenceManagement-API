@@ -62,6 +62,9 @@ class Entity(object) :
     def setHasOne(self,value):
         self.__hasOne.append(value)
 
+    def getHasOne(self):
+        return self.__hasOne
+
     def setBelongsTo(self,value):
         self.__belongsTo.append(value)
 
@@ -70,7 +73,7 @@ class Entity(object) :
         if self.id == None:
             return False
 
-        curseur.execute("SELECT * FROM " + self.__table +" WHERE id='"+self.id+"'")
+        curseur.execute("SELECT * FROM " + self.__table +" WHERE id='%s'"%self.id)
 
         if curseur.rowcount == 0 :
             return False
@@ -90,22 +93,36 @@ class Entity(object) :
     def search(self, args = {},lastUpdate = None):
 
         where = []
+        joinClause = []
 
-        request = "SELECT id FROM " + self.__table
+        request = "SELECT %s.id FROM %s"% (self.__table,self.__table)
+
+        if(len(self.getHasOne()) > 0):
+            for domain in self.getHasOne():
+                joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,self.__table,domain+"_id"))
+        request = request + "".join(joinClause)
+
         for key in args.keys():
+
             if self.getColumns().count(key) == 0:
+                for domain in self.getHasOne():
+                    domain = Entity(domain)
+                    if domain.getColumns().count(key) == 0:
+                        continue
+                    else:
+                        subClause = args[key].split(",")
+                        where.append("%s."%(domain.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
                 continue
+
             subClause = args[key].split(",")
-            where.append(key + " IN ( '" + "' , '".join(subClause) +"' )")
+            where.append("%s."%(self.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
 
         if(lastUpdate != None):
             date = datetime.strptime(lastUpdate, "%d %b %Y %H:%M:%S GMT")
-            where.append("updated > '" + date.strftime("%Y-%m-%d %H:%M:%S") + "'")
+            where.append("%s.updated > '"%(self.__table) + date.strftime("%Y-%m-%d %H:%M:%S") + "'")
 
         if(len(where)>0):
             request += " WHERE " + " AND ".join(where)
-
-        print request
 
         curseur.execute(request)
         rows = curseur.fetchall()
@@ -144,7 +161,6 @@ class Entity(object) :
         return entity
 
     def __setstate__(self,states):
-        print states
         print "ok"
 
     @staticmethod
@@ -163,7 +179,6 @@ class Entity(object) :
             else: setattr(self, key, obj[key])
 
     def asJson(self):
-        print self.__dict__
         return jsonpickle.encode(self, unpicklable=False)
 
     # def __str__(self):

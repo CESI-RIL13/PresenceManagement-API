@@ -41,7 +41,7 @@ def promotions(identifiant=None):
 
 @app.route('/schedulings/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def schedulings():
-    return
+    return jsonpickle.encode(Scheduling().search(request.args),unpicklable=False)
 
 @app.route('/rooms/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def rooms():
@@ -49,4 +49,4 @@ def rooms():
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host = "172.20.10.2")
+    app.run(host = "10.133.129.38")
