@@ -5,6 +5,7 @@ from config import connexion, curseur
 from datetime import datetime
 import calendar
 import jsonpickle
+import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
 from jsonpickle import handlers
 
 
@@ -110,9 +111,9 @@ class Entity(object) :
             if getattr(self, column) == None or column == "updated":
                 continue
             if type(getattr(self, column)) is datetime:
-                values.append(column + " = '" + getattr(self, column).strftime("%Y-%m-%d %H:%M:%S") + "'")
+                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column).strftime("%Y-%m-%d %H:%M:%S") + "'"))
             else:
-                values.append(column + " = '" + getattr(self, column) + "'")
+                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column) + "'"))
 
         request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
 
