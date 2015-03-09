@@ -59,6 +59,9 @@ class Entity(object) :
     def setHasMany(self,value):
         self.__hasMany.append(value)
 
+    def getHasMany(self):
+        return self.__hasMany
+
     def setHasOne(self,value):
         self.__hasOne.append(value)
 
@@ -92,49 +95,13 @@ class Entity(object) :
 
     def search(self, args = {},lastUpdate = None):
 
-        where = []
-        joinClause = []
-
-        request = "SELECT %s.id FROM %s"% (self.__table,self.__table)
-
-        if(len(self.getHasOne()) > 0):
-            for domain in self.getHasOne():
-                joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,self.__table,domain+"_id"))
-        request = request + "".join(joinClause)
-
-        for key in args.keys():
-
-            if self.getColumns().count(key) == 0:
-                for domain in self.getHasOne():
-                    domain = Entity(domain)
-                    if domain.getColumns().count(key) == 0:
-                        continue
-                    else:
-                        subClause = args[key].split(",")
-                        where.append("%s."%(domain.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
-                continue
-
-            subClause = args[key].split(",")
-            where.append("%s."%(self.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
-
-        if(lastUpdate != None):
-            date = datetime.strptime(lastUpdate, "%d %b %Y %H:%M:%S GMT")
-            where.append("%s.updated > '"%(self.__table) + date.strftime("%Y-%m-%d %H:%M:%S") + "'")
+        request = self._constructSelect()
+        where = self._constructWhereClause(args,lastUpdate)
 
         if(len(where)>0):
             request += " WHERE " + " AND ".join(where)
 
-        curseur.execute(request)
-        rows = curseur.fetchall()
-
-        result = []
-        for row in rows:
-            entity = Entity(self.__table)
-            entity.id = row['id']
-            entity.load()
-            result.append(entity)
-
-        return result
+        return self._executeSearch(request)
 
     def save(self):
         values = []
@@ -154,16 +121,6 @@ class Entity(object) :
 
         connexion.commit()
 
-    def __getstate__(self):
-        entity = {}
-        for column in self.getColumns():
-            entity[column] = getattr(self,column)
-        return entity
-
-    def __setstate__(self,states):
-        print "ok"
-
-    @staticmethod
     def fromDb(obj,table):
         e = Entity(table)
         for key in e.__dict__.keys():
@@ -171,7 +128,11 @@ class Entity(object) :
         return e
 
     def fromJson(self,json):
-        obj = jsonpickle.decode(json)
+        if type(json) is str:
+            obj = jsonpickle.decode(json)
+        else:
+            obj = json
+
         for key in self.getColumns():
             if obj.get(key) == None:
                 continue
@@ -184,11 +145,80 @@ class Entity(object) :
     # def __str__(self):
     #     return '{' + str(self.id) + '} ' + self.name + ' ' + self.email + ' ' + str(self.updated)
 
+    def __getstate__(self):
+        entity = {}
+        for column in self.getColumns():
+            entity[column] = getattr(self,column)
+        return entity
+
+    def __setstate__(self,states):
+        print "ok"
+
+    def _constructSelect(self):
+        joinClause = Entity.__getJoinClause(self)
+        request = "SELECT %s.id FROM %s"% (self.__table,self.__table)
+        return request + "".join(joinClause)
+
+    def _constructWhereClause(self,args = {},lastUpdate = None):
+        where = []
+
+        for key in args.keys():
+            if self.getColumns().count(key) == 0:
+                # for domain in self.getHasOne():
+                #     entity = getattr(__import__('models'),domain.title())()
+                #     if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.__table) > 0:
+                #         continue
+                #     else:
+                #         subClause = args[key].split(",")
+                #         where.append("%s."%(entity.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                continue
+
+            subClause = args[key].split(",")
+            where.append("%s."%(self.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+
+        if(lastUpdate != None):
+            date = datetime.strptime(lastUpdate, "%d %b %Y %H:%M:%S GMT")
+            where.append("%s.updated > '%s'"%(self.__table,date.strftime("%Y-%m-%d %H:%M:%S")))
+
+        return where
+
+    def _executeSearch(self,request = None,where = []):
+
+        if request == None:
+            return False
+
+        if len(where)>0:
+            request += " WHERE " + " AND ".join(where)
+
+        print request
+
+        curseur.execute(request)
+        rows = curseur.fetchall()
+
+        result = []
+        for row in rows:
+            entity = Entity(self.__table)
+            entity.id = row['id']
+            entity.load()
+            result.append(entity)
+
+        return result
+
+    def __getJoinClause(entity):
+        joinClause = []
+        if(len(entity.getHasOne()) > 0):
+            for domain in entity.getHasOne():
+                joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
+                subEntity = getattr(__import__('models'),domain.title())()
+                joinClause.extend(Entity.__getJoinClause(subEntity))
+        return joinClause
+
 class User(Entity) :
     def __init__(self):
         Entity.__init__(self,'user')
         self.setHasOne('promotion')
         self.setHasMany('presence')
+        self.setHasMany('scheduling')
 
 class Presence(Entity) :
     def __init__(self):
@@ -196,19 +226,38 @@ class Presence(Entity) :
         self.setHasOne('user')
         self.setBelongsTo('user')
 
+    def search(self, args = {},lastUpdate = None):
+        request = self._constructSelect()
+        where = self._constructWhereClause(args,lastUpdate)
+
+        if args.keys().count('promotion_id'):
+            where.append('promotion.id ="%s"'%(args['promotion_id']))
+
+        return self._executeSearch(request, where)
+
 class Room(Entity) :
     def __init__(self):
         Entity.__init__(self,'room')
+        self.setHasMany('scheduling')
 
 class Promotion(Entity) :
     def __init__(self):
         Entity.__init__(self,'promotion')
         self.setHasMany('scheduling')
+        self.setHasMany('user')
 
 class Scheduling(Entity) :
     def __init__(self):
         Entity.__init__(self,'scheduling')
         self.setHasOne('room')
         self.setHasOne('promotion')
-        self.setHasOne('user')
         self.setBelongsTo('promotion')
+
+    def search(self, args = {},lastUpdate = None):
+        request = self._constructSelect()
+        where = self._constructWhereClause(args,lastUpdate)
+
+        if args.keys().count('raspberry_id'):
+            where.append('room.raspberry_id ="%s"'%(args['raspberry_id']))
+
+        return self._executeSearch(request, where)
