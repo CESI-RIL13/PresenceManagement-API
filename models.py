@@ -127,6 +127,9 @@ class Entity(object) :
     def save(self):
         values = []
 
+        if self.id == None or self.id == "":
+            raise Error(400,"No id providing to manage the request")
+
         for column in self.__columns:
             if getattr(self, column) == None or column == "updated":
                 continue
@@ -173,9 +176,6 @@ class Entity(object) :
 
     def asJson(self):
         return jsonpickle.encode(self, unpicklable=False)
-
-    # def __str__(self):
-    #     return '{' + str(self.id) + '} ' + self.name + ' ' + self.email + ' ' + str(self.updated)
 
     def __getstate__(self):
         entity = {}
