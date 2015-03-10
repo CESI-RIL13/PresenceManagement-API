@@ -16,6 +16,14 @@ class DatetimeHandler(handlers.BaseHandler):
 handlers.registry.register(datetime, DatetimeHandler)
 jsonpickle.set_encoder_options('simplejson', sort_keys=True)
 
+class Error(Exception):
+     def __init__(self, code, value):
+        self.value = value
+        self.code = code
+
+     def __str__(self):
+         return repr(self.value)
+
 class Entity(object) :
 
     def __init__(self,table):
@@ -74,13 +82,22 @@ class Entity(object) :
 
     def load(self):
 
-        if self.id == None:
-            return False
+        if self.id == None or self.id == "":
+            raise Error(400,"No id providing to manage the request")
 
-        curseur.execute("SELECT * FROM " + self.__table +" WHERE id='%s'"%self.id)
+        try:
+            curseur.execute("SELECT * FROM " + self.__table +" WHERE id='%s'"%self.id)
+
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                raise Error(400,"Error processing request")
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400, "Error processing request")
 
         if curseur.rowcount == 0 :
-            return False
+            raise Error(404,"Nothing found matching the request")
 
         datas = curseur.fetchone()
 
@@ -93,6 +110,8 @@ class Entity(object) :
             #     setattr(self,column,entity)
             # else :
                 setattr(self,column,datas[column])
+
+        return True
 
     def search(self, args = {},lastUpdate = None):
 
@@ -111,16 +130,27 @@ class Entity(object) :
             if getattr(self, column) == None or column == "updated":
                 continue
             if type(getattr(self, column)) is datetime:
-                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column).strftime("%Y-%m-%d %H:%M:%S") + "'"))
+                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column).strftime("%Y-%m-%d %H:%M:%S")) + "'")
             else:
-                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column) + "'"))
+                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
+
 
         request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
 
-        if curseur.execute(request):
-            self.id = curseur.lastrowid
+        try :
+            if curseur.execute(request) and curseur.lastrowid:
+                setattr(self,"id",curseur.lastrowid)
 
-        connexion.commit()
+            connexion.commit()
+            return True
+
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                raise Error(400,"Error occuring processing the request")
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400,"Error occuring processing the request")
 
     def fromDb(obj,table):
         e = Entity(table)
@@ -193,7 +223,16 @@ class Entity(object) :
 
         print request
 
-        curseur.execute(request)
+        try:
+            curseur.execute(request)
+
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400,"Error occuring processing the request")
+
         rows = curseur.fetchall()
 
         result = []
