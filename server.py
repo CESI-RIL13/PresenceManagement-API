@@ -13,7 +13,6 @@ def hello():
     # print datetime.strptime(request.headers.get('If-Modified-Since'), "%d %b %Y %H:%M:%S GMT")
     return 'Circulez il n\'y a rien à voir !'
 
-@app.route('/users', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/users/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/users/<identifiant>', methods = ['GET', 'PUT', 'DELETE'])
 def users(identifiant=None):
@@ -63,7 +62,6 @@ def users(identifiant=None):
                 users.append(user.id)
             return jsonpickle.encode(users,unpicklable=False),201
 
-@app.route('/presences', methods = ['GET', 'POST'])
 @app.route('/presences/', methods = ['GET', 'POST'])
 def presences():
     if request.method == 'GET':
@@ -90,7 +88,6 @@ def presences():
         return jsonpickle.encode(presences,unpicklable=False),201
 
 
-@app.route('/promotions', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/promotions/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/promotions/<identifiant>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def promotions(identifiant=None):
@@ -137,7 +134,6 @@ def promotions(identifiant=None):
                 promotions.append(promotion.id)
             return jsonpickle.encode(promotions,unpicklable=False),201
 
-@app.route('/schedulings', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/schedulings/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def schedulings():
     if request.method == 'GET':
@@ -160,7 +156,6 @@ def schedulings():
             schedulings.append(scheduling.id)
         return jsonpickle.encode(schedulings,unpicklable=False),201
 
-@app.route('/rooms', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/rooms/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def rooms():
     if request.method == 'GET':

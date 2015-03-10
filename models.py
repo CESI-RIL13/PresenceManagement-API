@@ -3,6 +3,7 @@
 __author__ = 'Dos Santos Julien'
 from config import connexion, curseur
 from datetime import datetime
+import time
 import calendar
 import jsonpickle
 import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
@@ -204,7 +205,12 @@ class Entity(object) :
                 #         where.append("%s."%(entity.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
                 continue
 
-            subClause = args[key].split(",")
+            if key == "date" or key == "date_start" or key == "date_end":
+                subClause = []
+                subClause.append(datetime.fromtimestamp(float(args[key])).strftime("%Y-%m-%d %H:%M:%S"))
+            else:
+                subClause = args[key].split(",")
+
             where.append("%s."%(self.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
 
         if(lastUpdate != None):
@@ -276,6 +282,15 @@ class Presence(Entity) :
         if args.keys().count('promotion_id'):
             where.append('promotion.id ="%s"'%(args['promotion_id']))
 
+        elif args.keys().count('date_begin') > 0 and args.keys().count('date_ending') > 0:
+            where.append('date BETWEEN "%s" AND "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d %H:%M:%S"),datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d %H:%M:%S")))
+
+        elif args.keys().count('date_begin') > 0:
+            where.append('presence.date > "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d %H:%M:%S")))
+
+        elif args.keys().count('date_ending') > 0:
+            where.append('presence.date < "%s"'%(datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d %H:%M:%S")))
+
         return self._executeSearch(request, where)
 
 class Room(Entity) :
@@ -302,5 +317,9 @@ class Scheduling(Entity) :
 
         if args.keys().count('raspberry_id'):
             where.append('room.raspberry_id ="%s"'%(args['raspberry_id']))
+
+        if args.keys().count('date'):
+            date = datetime.fromtimestamp(float(args['date'])).strftime("%Y-%m-%d")
+            where.append('scheduling.date_start > "%s" AND scheduling.date_end < "%s"' % ("%s 00:00:00" % (date), "%s 23:59:59" % (date)))
 
         return self._executeSearch(request, where)
