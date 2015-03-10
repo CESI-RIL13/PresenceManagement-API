@@ -18,19 +18,36 @@ def hello():
 @app.route('/users/<identifiant>', methods = ['GET', 'PUT', 'DELETE'])
 def users(identifiant=None):
     if identifiant:
+
         user = User()
+
         if request.method == 'GET':
             user.id = identifiant
-            if user.load() == False:
-                abort(404)
-            return user.asJson(),200
+
+            try:
+                user.load()
+
+            except Error, e:
+                return e.value, e.code
+            else:
+                return user.asJson(),200
+
         elif request.method == 'PUT':
             user.fromJson(request.data)
-            user.save()
-            return user.asJson(),201
+            try :
+                user.save()
+
+            except Error, e:
+                return e.value,e.code
+            else:
+                return user.asJson(),201
     else :
+
         if request.method == 'GET':
-            return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+            try:
+                return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+            except Error, e:
+                return e.value,e.code
 
         elif request.method == 'POST' or request.method == 'PUT':
             entities = jsonpickle.decode(request.data)
@@ -38,7 +55,11 @@ def users(identifiant=None):
             for entity in entities:
                 user = User()
                 user.fromJson(entity)
-                user.save()
+                try:
+                    user.save()
+                except Error, e:
+                    return e.value,e.code
+
                 users.append(user.id)
             return jsonpickle.encode(users,unpicklable=False),201
 
@@ -46,15 +67,26 @@ def users(identifiant=None):
 @app.route('/presences/', methods = ['GET', 'POST'])
 def presences():
     if request.method == 'GET':
-        return jsonpickle.encode(Presence().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+        try:
+            return jsonpickle.encode(Presence().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+        except Error, e:
+            return e.value,e.code
+
     elif request.method == 'POST' or request.method == 'PUT':
+
         entities = jsonpickle.decode(request.data)
         presences = []
+
         for entity in entities:
             presence = Presence()
             presence.fromJson(entity)
-            presence.save()
+            try:
+                presence.save()
+            except Error, e:
+                return e.value,e.code
+
             presences.append(presence.id)
+
         return jsonpickle.encode(presences,unpicklable=False),201
 
 
@@ -64,18 +96,32 @@ def presences():
 def promotions(identifiant=None):
     if identifiant:
         promotion = Promotion()
+
         if request.method == 'GET':
+
             promotion.id = identifiant
-            if promotion.load() == False:
-                abort(404)
-            return promotion.asJson(), 200
+            try:
+                promotion.load()
+            except Error, e:
+                return e.value,e.code
+            else:
+                return promotion.asJson(), 200
+
         elif request.method == 'PUT':
+
             promotion.fromJson(request.data)
-            promotion.save()
-            return promotion.asJson(),201
+            try:
+                promotion.save()
+            except Error,e:
+                return e.value,e.code
+            else:
+                return promotion.asJson(),201
     else:
         if request.method == 'GET':
-            return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+            try:
+                return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+            except Error,e:
+                return e.value,e.code
 
         elif request.method == 'POST' or request.method == 'PUT':
             entities = jsonpickle.decode(request.data)
@@ -83,7 +129,11 @@ def promotions(identifiant=None):
             for entity in entities:
                 promotion = Promotion()
                 promotion.fromJson(entity)
-                promotion.save()
+                try:
+                    promotion.save()
+                except Error,e:
+                    return e.value,e.code
+
                 promotions.append(promotion.id)
             return jsonpickle.encode(promotions,unpicklable=False),201
 
@@ -91,14 +141,22 @@ def promotions(identifiant=None):
 @app.route('/schedulings/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def schedulings():
     if request.method == 'GET':
-        return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+        try:
+            return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+        except Error, e:
+            return e.value,e.code
+
     elif request.method == 'POST' or request.method == 'PUT':
         entities = jsonpickle.decode(request.data)
         schedulings = []
         for entity in entities:
             scheduling = Scheduling()
             scheduling.fromJson(entity)
-            scheduling.save()
+            try:
+                scheduling.save()
+            except Error,e:
+                return e.value,e.code
+
             schedulings.append(scheduling.id)
         return jsonpickle.encode(schedulings,unpicklable=False),201
 
@@ -106,15 +164,23 @@ def schedulings():
 @app.route('/rooms/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def rooms():
     if request.method == 'GET':
-        return jsonpickle.encode(Room().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+        try:
+            return jsonpickle.encode(Room().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+        except Error,e:
+            return e.value,e.code
+
     elif request.method == 'POST' or request.method == 'PUT':
         entities = jsonpickle.decode(request.data)
         rooms = []
         for entity in entities:
             room = Room()
             room.fromJson(entity)
-            room.save()
-            schedulings.append(rooms.id)
+            try:
+                room.save()
+            except Error,e:
+                return e.value,e.code
+
+            rooms.append(room.id)
         return jsonpickle.encode(rooms,unpicklable=False),201
 
 if __name__ == "__main__":
