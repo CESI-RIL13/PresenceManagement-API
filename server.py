@@ -116,7 +116,7 @@ def promotions(identifiant=None):
     else:
         if request.method == 'GET':
             try:
-                return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+                return jsonpickle.encode(Promotion().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
             except Error,e:
                 return e.value,e.code
 
