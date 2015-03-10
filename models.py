@@ -3,7 +3,6 @@
 __author__ = 'Dos Santos Julien'
 from config import connexion, curseur
 from datetime import datetime
-import time
 import calendar
 import jsonpickle
 import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
