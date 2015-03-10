@@ -282,8 +282,8 @@ class Presence(Entity) :
         if args.keys().count('promotion_id'):
             where.append('promotion.id ="%s"'%(args['promotion_id']))
 
-        elif args.keys().count('date_begin') > 0 and args.keys().count('date_ending') > 0:
-            where.append('date BETWEEN "%s" AND "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d %H:%M:%S"),datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d %H:%M:%S")))
+        if args.keys().count('date_begin') > 0 and args.keys().count('date_ending') > 0:
+            where.append('presence.date BETWEEN "%s" AND "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d %H:%M:%S"),datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d %H:%M:%S")))
 
         elif args.keys().count('date_begin') > 0:
             where.append('presence.date > "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d %H:%M:%S")))
@@ -320,6 +320,15 @@ class Scheduling(Entity) :
 
         if args.keys().count('date'):
             date = datetime.fromtimestamp(float(args['date'])).strftime("%Y-%m-%d")
-            where.append('scheduling.date_start > "%s" AND scheduling.date_end < "%s"' % ("%s 00:00:00" % (date), "%s 23:59:59" % (date)))
+            where.append('scheduling.date_start > "%s 00:00:00" AND scheduling.date_end < "%s 23:59:59"' % (date,date))
+
+        if args.keys().count('date_begin') > 0 and args.keys().count('date_ending') > 0:
+            where.append('scheduling.date_start BETWEEN "%s" AND "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d 00:00:00"),datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d 23:59:29")))
+
+        elif args.keys().count('date_begin') > 0:
+            where.append('scheduling.date_start > "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d 00:00:00")))
+
+        elif args.keys().count('date_ending') > 0:
+            where.append('scheduling.date_start < "%s"'%(datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d 23:59:59")))
 
         return self._executeSearch(request, where)
