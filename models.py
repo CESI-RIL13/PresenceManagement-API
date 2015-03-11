@@ -183,8 +183,8 @@ class Entity(object) :
         print "ok"
 
     def _constructSelect(self):
-        joinClause = Entity.__getJoinClause(self)
-        request = "SELECT %s.id FROM %s"% (self.__table,self.__table)
+        joinClause = self._getJoinClause(self)
+        request = "SELECT DISTINCT %s.id FROM %s"% (self.__table,self.__table)
         return request + "".join(joinClause)
 
     def _constructWhereClause(self,args = {},lastUpdate = None):
@@ -249,13 +249,13 @@ class Entity(object) :
 
         return result
 
-    def __getJoinClause(entity):
+    def _getJoinClause(self,entity):
         joinClause = []
         if(len(entity.getHasOne()) > 0):
             for domain in entity.getHasOne():
                 joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
                 subEntity = getattr(__import__('models'),domain.title())()
-                joinClause.extend(Entity.__getJoinClause(subEntity))
+                joinClause.extend(Entity._getJoinClause(subEntity))
         return joinClause
 
 class User(Entity) :
@@ -264,6 +264,21 @@ class User(Entity) :
         self.setHasOne('promotion')
         self.setHasMany('presence')
         self.setHasMany('scheduling')
+
+    def _getJoinClause(self,entity):
+        joinClause = []
+        if(len(entity.getHasOne()) > 0):
+            for domain in entity.getHasOne():
+
+                if domain == "promotion":
+                    joinClause.append(" JOIN %s ON %s.id = %s.%s OR %s IS NULL" % (domain, domain,entity.getTable(),domain+"_id",domain+"_id"))
+
+                else:
+                    joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
+
+                subEntity = getattr(__import__('models'),domain.title())()
+                joinClause.extend(Entity._getJoinClause(subEntity))
+        return joinClause
 
 class Presence(Entity) :
     def __init__(self):
