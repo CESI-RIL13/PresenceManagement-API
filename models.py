@@ -304,6 +304,19 @@ class Presence(Entity) :
 
         return self._executeSearch(request, where)
 
+    def fromJson(self,json):
+        if type(json) is str:
+            obj = jsonpickle.decode(json)
+        else:
+            obj = json
+
+        for key in self.getColumns():
+            if obj.get(key) == None:
+                continue
+            if key == 'updated': setattr(self, key, datetime.fromtimestamp(obj[key]))
+            elif key == 'date' : setattr(self,key, datetime.fromtimestamp(float(obj[key])))
+            else: setattr(self, key, obj[key])
+
 class Room(Entity) :
     def __init__(self):
         Entity.__init__(self,'room')
@@ -343,3 +356,16 @@ class Scheduling(Entity) :
             where.append('scheduling.date_start < "%s"'%(datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d 23:59:59")))
 
         return self._executeSearch(request, where)
+
+    def fromJson(self,json):
+        if type(json) is str:
+            obj = jsonpickle.decode(json)
+        else:
+            obj = json
+
+        for key in self.getColumns():
+            if obj.get(key) == None:
+                continue
+            if key == 'updated': setattr(self, key, datetime.fromtimestamp(obj[key]))
+            elif key == 'date_start' or key == 'date_end' : setattr(self,key, datetime.fromtimestamp(float(obj[key])))
+            else: setattr(self, key, obj[key])
