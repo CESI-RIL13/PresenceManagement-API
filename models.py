@@ -255,7 +255,7 @@ class Entity(object) :
             for domain in entity.getHasOne():
                 joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
                 subEntity = getattr(__import__('models'),domain.title())()
-                joinClause.extend(Entity._getJoinClause(subEntity))
+                joinClause.extend(Entity._getJoinClause(self,subEntity))
         return joinClause
 
 class User(Entity) :
@@ -277,7 +277,7 @@ class User(Entity) :
                     joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
 
                 subEntity = getattr(__import__('models'),domain.title())()
-                joinClause.extend(Entity._getJoinClause(subEntity))
+                joinClause.extend(Entity._getJoinClause(self,subEntity))
         return joinClause
 
 class Presence(Entity) :
