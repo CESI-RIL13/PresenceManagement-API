@@ -126,9 +126,6 @@ class Entity(object) :
     def save(self):
         values = []
 
-        if self.id == None or self.id == "":
-            raise Error(400,"No id providing to manage the request")
-
         for column in self.__columns:
             if getattr(self, column) == None or column == "updated":
                 continue
