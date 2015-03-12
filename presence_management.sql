@@ -45,7 +45,7 @@ DROP TABLE IF EXISTS `presence_management`.`room` ;
 
 CREATE  TABLE IF NOT EXISTS `presence_management`.`room` (
   `id` INT NOT NULL AUTO_INCREMENT ,
-  `name` VARCHAR(255) NULL ,
+  `name` VARCHAR(255) NOT NULL ,
   `raspberry_id` VARCHAR(255) NULL COMMENT 'adresse MAC du raspberry client' ,
   `token` VARCHAR(255) NULL ,
   `archived` TINYINT(1) NULL DEFAULT 0 ,
@@ -63,10 +63,10 @@ DROP TABLE IF EXISTS `presence_management`.`scheduling` ;
 CREATE  TABLE IF NOT EXISTS `presence_management`.`scheduling` (
   `id` INT NOT NULL AUTO_INCREMENT ,
   `date_start` DATETIME NOT NULL ,
-  `date_end` DATETIME NULL ,
+  `date_end` DATETIME NOT NULL ,
   `promotion_id` VARCHAR(255) NOT NULL ,
   `room_id` INT NOT NULL ,
-  `user_id` VARCHAR(255) NOT NULL ,
+  `user_id` VARCHAR(255) NULL ,
   `course` VARCHAR(255) NULL ,
   `archived` TINYINT(1) NULL DEFAULT 0 ,
   `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
