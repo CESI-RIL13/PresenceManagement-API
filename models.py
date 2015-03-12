@@ -129,11 +129,7 @@ class Entity(object) :
         for column in self.getColumns():
             if getattr(self, column) == None or column == "updated" or self.getColumns().count(column) == 0:
                 continue
-            print column, type(getattr(self, column))
-            if type(getattr(self, column)) is datetime:
-                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column).fromtimestamp("%Y-%m-%d %H:%M:%S")) + "'")
-            else:
-                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
+            values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
 
 
         request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
@@ -376,7 +372,7 @@ class Presence(Entity) :
             obj = json
 
         for attr in obj:
-            if attr == 'date': setattr(self,attr, datetime.fromtimestamp(float(obj[attr])))
+            if attr == 'date': setattr(self,attr, datetime.fromtimestamp(float(obj[attr])).strftime("%Y-%m-%d %H:%M:%S"))
             else:
                 setattr(self,attr,obj[attr])
 
@@ -424,6 +420,6 @@ class Scheduling(Entity) :
             obj = json
 
         for attr in obj:
-            if attr == 'date_start' or attr == 'date_end' : setattr(self,attr, datetime.fromtimestamp(float(obj[attr])))
+            if attr == 'date_start' or attr == 'date_end' : setattr(self,attr, datetime.fromtimestamp(float(obj[attr])).strftime("%Y-%m-%d %H:%M:%S"))
             else:
                 setattr(self,attr,obj[attr])
