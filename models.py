@@ -126,8 +126,8 @@ class Entity(object) :
     def save(self):
         values = []
 
-        for column in self.__columns:
-            if getattr(self, column) == None or column == "updated":
+        for column in self.getColumns():
+            if getattr(self, column) == None or column == "updated" or self.getColumns().count(column) == 0:
                 continue
             if type(getattr(self, column)) is datetime:
                 values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column).strftime("%Y-%m-%d %H:%M:%S")) + "'")
@@ -140,6 +140,20 @@ class Entity(object) :
         try :
             if curseur.execute(request) and curseur.lastrowid:
                 setattr(self,"id",curseur.lastrowid)
+
+            for domain in self.getHasMany():
+                subEntity = getattr(__import__('models'),domain.title())()
+
+                if subEntity.getHasMany().count(self.getTable()) == 0:
+                    continue
+
+                if self.__dict__.get(domain+'_id'):
+                    jointure = "%s_has_%s" % (self.getTable(),domain)
+
+                    if(self._checkTable(jointure) == False):
+                        jointure = "%s_has_%s" % (domain,self.getTable())
+
+                    curseur.execute("INSERT INTO %s SET %s = '%s', %s = '%s'" % (jointure,self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id")))
 
             connexion.commit()
             return True
@@ -164,11 +178,8 @@ class Entity(object) :
         else:
             obj = json
 
-        for key in self.getColumns():
-            if obj.get(key) == None:
-                continue
-            if key == 'updated': setattr(self, key, datetime.fromtimestamp(obj[key]))
-            else: setattr(self, key, obj[key])
+        for attr in obj:
+            setattr(self,attr,obj[attr])
 
     def asJson(self):
         return jsonpickle.encode(self, unpicklable=False)
@@ -182,6 +193,10 @@ class Entity(object) :
     def __setstate__(self,states):
         print "ok"
 
+    def _checkTable(self,tableName):
+        curseur.execute("SHOW TABLES FROM presence_management WHERE Tables_in_presence_management = '%s'"%tableName)
+        return curseur.rowcount > 0
+
     def _constructSelect(self):
         joinClause = self._getJoinClause(self)
         request = "SELECT DISTINCT %s.id FROM %s"% (self.__table,self.__table)
@@ -192,16 +207,27 @@ class Entity(object) :
 
         for key in args.keys():
             if self.getColumns().count(key) == 0:
-                # for domain in self.getHasOne():
-                #     entity = getattr(__import__('models'),domain.title())()
-                #     if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.__table) > 0:
-                #         continue
-                #     else:
-                #         subClause = args[key].split(",")
-                #         where.append("%s."%(entity.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                for domain in self.getHasOne():
+                    entity = getattr(__import__('models'),domain.title())()
+                    if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.__table) > 0:
+                        continue
+                    else:
+                        subClause = args[key].split(",")
+                        where.append("%s."%(entity.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                for domain in self.getHasMany():
+                    subClause = args[key].split(",")
+                    entity = getattr(__import__('models'),domain.title())()
+                    if entity.getHasMany().count(self.getTable()) > 0:
+                        jointure = "%s_has_%s" % (self.getTable(),domain)
+                        if(self._checkTable(jointure) == False):
+                            jointure = "%s_has_%s" % (domain,entity.getTable())
+
+                        where.append("%s."%(jointure) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                    else:
+                        continue
                 continue
 
-            if key == "date" or key == "date_start" or key == "date_end":
+            if key == "date_start" or key == "date_end":
                 subClause = []
                 subClause.append(datetime.fromtimestamp(float(args[key])).strftime("%Y-%m-%d %H:%M:%S"))
             else:
@@ -253,32 +279,32 @@ class Entity(object) :
         joinClause = []
         if(len(entity.getHasOne()) > 0):
             for domain in entity.getHasOne():
-                joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
+                joinClause.append(" LEFT JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
                 subEntity = getattr(__import__('models'),domain.title())()
-                joinClause.extend(subEntity._getJoinClause(subEntity))
+                joinClause.extend(self._getJoinClause(subEntity))
+        if(len(entity.getHasMany()) > 0):
+            for domain in entity.getHasMany():
+                if(domain == self.getTable()):
+                    continue
+                subEntity = getattr(__import__('models'),domain.title())()
+                if subEntity.getHasMany().count(entity.getTable()) > 0:
+                    jointure = "%s_has_%s" % (entity.getTable(),domain)
+
+                    if(self._checkTable(jointure) == False):
+                        jointure = "%s_has_%s" % (domain,entity.getTable())
+
+                    joinClause.append(" LEFT JOIN %s ON %s.id = %s.%s" % (jointure,entity.getTable(),jointure,entity.getTable()+"_id"))
+                else:
+                    joinClause.append(" LEFT JOIN %s ON %s.id = %s.%s" % (domain,entity.getTable(), domain,entity.getTable()+"_id"))
+
         return joinClause
 
 class User(Entity) :
     def __init__(self):
         Entity.__init__(self,'user')
-        self.setHasOne('promotion')
+        self.setHasMany('promotion')
         self.setHasMany('presence')
         self.setHasMany('scheduling')
-
-    def _getJoinClause(self,entity):
-        joinClause = []
-        if(len(entity.getHasOne()) > 0):
-            for domain in entity.getHasOne():
-
-                if domain == "promotion":
-                    joinClause.append(" JOIN %s ON %s.id = %s.%s OR %s IS NULL" % (domain, domain,entity.getTable(),domain+"_id",domain+"_id"))
-
-                else:
-                    joinClause.append(" JOIN %s ON %s.id = %s.%s" % (domain, domain,entity.getTable(),domain+"_id"))
-
-                subEntity = getattr(__import__('models'),domain.title())()
-                joinClause.extend(subEntity._getJoinClause(subEntity))
-        return joinClause
 
 class Presence(Entity) :
     def __init__(self):
@@ -291,7 +317,7 @@ class Presence(Entity) :
         where = self._constructWhereClause(args,lastUpdate)
 
         if args.keys().count('promotion_id'):
-            where.append('promotion.id ="%s"'%(args['promotion_id']))
+            where.append('user_has_promotion.promotion_id ="%s"'%(args['promotion_id']))
 
         if args.keys().count('date_begin') > 0 and args.keys().count('date_ending') > 0:
             where.append('presence.date BETWEEN "%s" AND "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d %H:%M:%S"),datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d %H:%M:%S")))
@@ -304,18 +330,43 @@ class Presence(Entity) :
 
         return self._executeSearch(request, where)
 
-    def fromJson(self,json):
-        if type(json) is str:
-            obj = jsonpickle.decode(json)
-        else:
-            obj = json
+    def _constructWhereClause(self,args = {},lastUpdate = None):
+        where = []
 
-        for key in self.getColumns():
-            if obj.get(key) == None:
+        for key in args.keys():
+            if self.getColumns().count(key) == 0:
+                for domain in self.getHasOne():
+                    entity = getattr(__import__('models'),domain.title())()
+                    if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.__table) > 0:
+                        continue
+                    else:
+                        subClause = args[key].split(",")
+                        where.append("%s."%(entity.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                for domain in self.getHasMany():
+                    subClause = args[key].split(",")
+                    entity = getattr(__import__('models'),domain.title())()
+                    if entity.getHasMany().count(self.getTable()) > 0:
+                        jointure = "%s_has_%s" % (self.getTable(),domain)
+                        if(self._checkTable(jointure) == False):
+                            jointure = "%s_has_%s" % (domain,entity.getTable())
+
+                        where.append("%s."%(jointure) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                    else:
+                        continue
                 continue
-            if key == 'updated': setattr(self, key, datetime.fromtimestamp(obj[key]))
-            elif key == 'date' : setattr(self,key, datetime.fromtimestamp(float(obj[key])))
-            else: setattr(self, key, obj[key])
+
+            if key == "date":
+                date = datetime.fromtimestamp(float(args[key])).strftime("%Y-%m-%d")
+                where.append("%s.date BETWEEN '%s 00:00:00' AND '%s 23:59:59'" % (self.getTable(),date,date))
+            else:
+                subClause = args[key].split(",")
+                where.append("%s."%(self.getTable()) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+
+        if(lastUpdate != None):
+            date = datetime.strptime(lastUpdate, "%d %b %Y %H:%M:%S GMT")
+            where.append("%s.updated > '%s'"%(self.getTable(),date.strftime("%Y-%m-%d %H:%M:%S")))
+
+        return where
 
 class Room(Entity) :
     def __init__(self):
@@ -346,26 +397,10 @@ class Scheduling(Entity) :
             date = datetime.fromtimestamp(float(args['date'])).strftime("%Y-%m-%d")
             where.append('scheduling.date_start > "%s 00:00:00" AND scheduling.date_end < "%s 23:59:59"' % (date,date))
 
-        if args.keys().count('date_begin') > 0 and args.keys().count('date_ending') > 0:
-            where.append('scheduling.date_start BETWEEN "%s" AND "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d 00:00:00"),datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d 23:59:29")))
-
-        elif args.keys().count('date_begin') > 0:
+        if args.keys().count('date_begin') > 0:
             where.append('scheduling.date_start > "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d 00:00:00")))
 
-        elif args.keys().count('date_ending') > 0:
-            where.append('scheduling.date_start < "%s"'%(datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d 23:59:59")))
+        if args.keys().count('date_ending') > 0:
+            where.append('scheduling.date_ending < "%s"'%(datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d 23:59:59")))
 
         return self._executeSearch(request, where)
-
-    def fromJson(self,json):
-        if type(json) is str:
-            obj = jsonpickle.decode(json)
-        else:
-            obj = json
-
-        for key in self.getColumns():
-            if obj.get(key) == None:
-                continue
-            if key == 'updated': setattr(self, key, datetime.fromtimestamp(obj[key]))
-            elif key == 'date_start' or key == 'date_end' : setattr(self,key, datetime.fromtimestamp(float(obj[key])))
-            else: setattr(self, key, obj[key])

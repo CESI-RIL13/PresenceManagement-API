@@ -13,8 +13,7 @@ DROP TABLE IF EXISTS `presence_management`.`user` ;
 
 CREATE  TABLE IF NOT EXISTS `presence_management`.`user` (
   `id` VARCHAR(255) NOT NULL ,
-  `name` VARCHAR(255) NULL ,
-  `firstname` VARCHAR(255) NULL ,
+  `fullname` VARCHAR(255) NULL ,
   `mail` VARCHAR(255) NOT NULL ,
   `password` VARCHAR(45) NULL ,
   `role` ENUM('SA','Ingénieur formation','assistant','intervenant','stagiaire') NOT NULL ,

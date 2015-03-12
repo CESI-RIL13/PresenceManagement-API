@@ -88,7 +88,6 @@ def presences():
 
         return jsonpickle.encode(presences,unpicklable=False),201
 
-
 @app.route('/promotions/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/promotions/<identifiant>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 def promotions(identifiant=None):
