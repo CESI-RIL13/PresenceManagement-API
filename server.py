@@ -11,6 +11,7 @@ app = Flask(__name__)
 @app.route("/")
 def hello():
     # print datetime.strptime(request.headers.get('If-Modified-Since'), "%d %b %Y %H:%M:%S GMT")
+    session['test'] = 'test'
     return 'Circulez il n\'y a rien à voir !'
 
 @app.route('/users/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
@@ -177,6 +178,9 @@ def rooms():
 
             rooms.append(room.id)
         return jsonpickle.encode(rooms,unpicklable=False),201
+
+# set the secret key.  keep this really secret:
+app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
 
 if __name__ == "__main__":
     app.debug = True

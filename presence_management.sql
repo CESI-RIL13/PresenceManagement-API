@@ -1,111 +1,105 @@
--- phpMyAdmin SQL Dump
--- version 4.0.4
--- http://www.phpmyadmin.net
---
--- Client: localhost
--- Généré le: Lun 09 Mars 2015 à 16:11
--- Version du serveur: 5.6.12-log
--- Version de PHP: 5.4.12
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
+DROP SCHEMA IF EXISTS `presence_management` ;
+CREATE SCHEMA IF NOT EXISTS `presence_management` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci ;
+USE `presence_management` ;
 
+-- -----------------------------------------------------
+-- Table `presence_management`.`user`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `presence_management`.`user` ;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
-
---
--- Base de données: `presence_management`
---
-CREATE DATABASE IF NOT EXISTS `presence_management` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `presence_management`;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `presence`
---
-
-CREATE TABLE IF NOT EXISTS `presence` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date` datetime NOT NULL,
-  `user_id` varchar(255) NOT NULL,
-  `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `fk_presence_user1_idx` (`user_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
-
--- --------------------------------------------------------
-
---
--- Structure de la table `promotion`
---
-
-CREATE TABLE IF NOT EXISTS `promotion` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `late` int(11) DEFAULT '15',
-  `upadted` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+CREATE  TABLE IF NOT EXISTS `presence_management`.`user` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `mail` VARCHAR(255) NOT NULL ,
+  `password` VARCHAR(255) NOT NULL ,
+  `role` ENUM('SA','IF','Assistant') NOT NULL ,
+  `name` VARCHAR(255) NULL ,
+  `firstname` VARCHAR(255) NULL ,
+  `archived` TINYINT(1) NULL DEFAULT 0 ,
+  `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
 
 
--- --------------------------------------------------------
+-- -----------------------------------------------------
+-- Table `presence_management`.`promotion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `presence_management`.`promotion` ;
 
---
--- Structure de la table `room`
---
-
-CREATE TABLE IF NOT EXISTS `room` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `raspberry_id` varchar(255) DEFAULT NULL COMMENT 'adresse MAC du raspberry client',
-  `token` varchar(255) DEFAULT NULL,
-  `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `raspberry_id_UNIQUE` (`raspberry_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
-
---
--- Contenu de la table `roo
-
--- --------------------------------------------------------
-
---
--- Structure de la table `scheduling`
---
-
-CREATE TABLE IF NOT EXISTS `scheduling` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `date_start` datetime NOT NULL,
-  `date_end` datetime DEFAULT NULL,
-  `room_id` int(11) NOT NULL,
-  `promotion_id` varchar(255) NOT NULL,
-  `user_id` varchar(255) NOT NULL,
-  `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `fk_scheduling_promotion1_idx` (`promotion_id`),
-  KEY `fk_scheduling_user1_idx` (`user_id`),
-  KEY `fk_scheduling_room1_idx` (`room_id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+CREATE  TABLE IF NOT EXISTS `presence_management`.`promotion` (
+  `id` VARCHAR(255) NOT NULL ,
+  `name` VARCHAR(255) NULL ,
+  `late` INT NULL DEFAULT 15 ,
+  `archived` TINYINT(1) NULL DEFAULT 0 ,
+  `upadted` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+  PRIMARY KEY (`id`) )
+ENGINE = InnoDB;
 
 
+-- -----------------------------------------------------
+-- Table `presence_management`.`room`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `presence_management`.`room` ;
 
--- --------------------------------------------------------
+CREATE  TABLE IF NOT EXISTS `presence_management`.`room` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `name` VARCHAR(255) NULL ,
+  `raspberry_id` VARCHAR(255) NULL COMMENT 'adresse MAC du raspberry client' ,
+  `token` VARCHAR(255) NULL ,
+  `archived` TINYINT(1) NULL DEFAULT 0 ,
+  `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+  PRIMARY KEY (`id`) ,
+  UNIQUE INDEX `raspberry_id_UNIQUE` (`raspberry_id` ASC) )
+ENGINE = InnoDB;
 
---
--- Structure de la table `user`
---
 
-CREATE TABLE IF NOT EXISTS `user` (
-  `id` varchar(255) NOT NULL,
-  `name` varchar(255) DEFAULT NULL,
-  `firstname` varchar(255) DEFAULT NULL,
-  `mail` varchar(255) NOT NULL,
-  `promotion_id` varchar(255) DEFAULT NULL,
-  `updated` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`id`),
-  KEY `fk_user_promotion_idx` (`promotion_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- -----------------------------------------------------
+-- Table `presence_management`.`scheduling`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `presence_management`.`scheduling` ;
+
+CREATE  TABLE IF NOT EXISTS `presence_management`.`scheduling` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `date_start` DATETIME NOT NULL ,
+  `date_end` DATETIME NULL ,
+  `promotion_id` VARCHAR(255) NOT NULL ,
+  `room_id` INT NOT NULL ,
+  `user_id` VARCHAR(255) NOT NULL ,
+  `course` VARCHAR(255) NULL ,
+  `archived` TINYINT(1) NULL DEFAULT 0 ,
+  `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+
+
+-- -----------------------------------------------------
+-- Table `presence_management`.`presence`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `presence_management`.`presence` ;
+
+CREATE  TABLE IF NOT EXISTS `presence_management`.`presence` (
+  `id` INT NOT NULL AUTO_INCREMENT ,
+  `date` DATETIME NOT NULL ,
+  `user_id` VARCHAR(255) NOT NULL ,
+  `archived` TINYINT(1) NULL DEFAULT 0 ,
+  `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
+  PRIMARY KEY (`id`))
+ENGINE = InnoDB;
+-- -----------------------------------------------------
+-- Table `presence_management`.`user_has_promotion`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `presence_management`.`user_has_promotion` ;
+
+CREATE  TABLE IF NOT EXISTS `presence_management`.`user_has_promotion` (
+  `user_id` VARCHAR(255) NOT NULL ,
+  `promotion_id` VARCHAR(255) NOT NULL ,
+  PRIMARY KEY (`user_id`, `promotion_id`))
+ENGINE = InnoDB;
+
+USE `presence_management` ;
+
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
