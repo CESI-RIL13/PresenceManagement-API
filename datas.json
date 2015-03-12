@@ -1,0 +1,56 @@
+/* 
+*
+*	/promotions/
+*
+*	Data pour ressource Promotion
+*
+*/
+[
+	{"id":"BO30440","name":"RILA13"},
+	{"id":"BO30441","name":"RARE13"}
+]
+
+/* 
+*
+*	/users/
+*
+*	Data pour ressource User
+*
+*/
+[	
+	{"id":"1234567890","fullname":"Julien DOS SANTOS","mail":"julien.dossantos@viacesi.fr","role":"stagiaire"},
+	{"id":"1234567891","fullname":"Cedric MOIZEAU","mail":"cedric.moizeau@viacesi.fr","role":"stagiaire"},
+	{"id":"1234567892","fullname":"Eric Artigala","mail":"eric.artigala@viacesi.fr","role":"intervenant"},
+	{"id":"1234567893","fullname":"Benjamin TOUCHARD","mail":"benjamin.touchard@viacesi.fr","role":"intervenant"},
+	{"id":"1234567894","fullname":"Stephane AMET","mail":"samet@cesi.fr","role":"IF"},
+	{"id":"1234567895","fullname":"Jessica BOUVIER","mail":"samet@cesi.fr","role":"IF"},
+	{"id":"1234567896","fullname":"un RARE","mail":"un.rare@viacesi.fr","role":"stagiaire"}
+]
+
+/* 
+*
+*	/rooms/
+*
+*	Data pour ressource Room
+*
+*/
+
+[
+	{"id":"1","name":"Lacanau","raspberry_id":"b8:e8:56:41:6e:24"},
+	{"id":"2","name":"Cap Ferret","raspberry_id":"00:13:ef:60:0h:6a"}
+]
+
+/* 
+*
+*	/schedulings/
+*
+*	Data pour ressource Scheduling
+*
+*/
+
+[
+	{"date_start":1426145400,"date_end":1426159800,"promotion_id":"BO30440","room_id":"8","user_id":"1234567892","course":"informatique mobile"},
+	{"date_start":1426163400,"date_end":1426177800,"promotion_id":"BO30440","room_id":"8","user_id":"1234567892","course":"informatique mobile"},
+	{"date_start":1426145400,"date_end":1426159800,"promotion_id":"BO30441","room_id":"7","user_id":"","course":"PFR"},
+	{"date_start":1426163400,"date_end":1426177800,"promotion_id":"BO30441","room_id":"7","user_id":"","course":"PFR"}
+]

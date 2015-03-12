@@ -129,14 +129,15 @@ class Entity(object) :
         for column in self.getColumns():
             if getattr(self, column) == None or column == "updated" or self.getColumns().count(column) == 0:
                 continue
+            print column, type(getattr(self, column))
             if type(getattr(self, column)) is datetime:
-                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column).strftime("%Y-%m-%d %H:%M:%S")) + "'")
+                values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column).fromtimestamp("%Y-%m-%d %H:%M:%S")) + "'")
             else:
                 values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
 
 
         request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
-
+        print request
         try :
             if curseur.execute(request) and curseur.lastrowid:
                 setattr(self,"id",curseur.lastrowid)
@@ -179,7 +180,7 @@ class Entity(object) :
             obj = json
 
         for attr in obj:
-            setattr(self,attr,obj[attr])
+           setattr(self,attr,obj[attr])
 
     def asJson(self):
         return jsonpickle.encode(self, unpicklable=False)
@@ -368,6 +369,17 @@ class Presence(Entity) :
 
         return where
 
+    def fromJson(self,json):
+        if type(json) is str:
+            obj = jsonpickle.decode(json)
+        else:
+            obj = json
+
+        for attr in obj:
+            if attr == 'date': setattr(self,attr, datetime.fromtimestamp(float(obj[attr])))
+            else:
+                setattr(self,attr,obj[attr])
+
 class Room(Entity) :
     def __init__(self):
         Entity.__init__(self,'room')
@@ -404,3 +416,14 @@ class Scheduling(Entity) :
             where.append('scheduling.date_ending < "%s"'%(datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d 23:59:59")))
 
         return self._executeSearch(request, where)
+
+    def fromJson(self,json):
+        if type(json) is str:
+            obj = jsonpickle.decode(json)
+        else:
+            obj = json
+
+        for attr in obj:
+            if attr == 'date_start' or attr == 'date_end' : setattr(self,attr, datetime.fromtimestamp(float(obj[attr])))
+            else:
+                setattr(self,attr,obj[attr])
