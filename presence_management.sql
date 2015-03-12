@@ -1,4 +1,5 @@
 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='TRADITIONAL,ALLOW_INVALID_DATES';
 
 DROP SCHEMA IF EXISTS `presence_management` ;
@@ -11,12 +12,12 @@ USE `presence_management` ;
 DROP TABLE IF EXISTS `presence_management`.`user` ;
 
 CREATE  TABLE IF NOT EXISTS `presence_management`.`user` (
-  `id` INT NOT NULL AUTO_INCREMENT ,
-  `mail` VARCHAR(255) NOT NULL ,
-  `password` VARCHAR(255) NOT NULL ,
-  `role` ENUM('SA','IF','Assistant') NOT NULL ,
+  `id` VARCHAR(255) NOT NULL ,
   `name` VARCHAR(255) NULL ,
   `firstname` VARCHAR(255) NULL ,
+  `mail` VARCHAR(255) NOT NULL ,
+  `password` VARCHAR(45) NULL ,
+  `role` ENUM('SA','Ingénieur formation','assistant','intervenant','stagiaire') NOT NULL ,
   `archived` TINYINT(1) NULL DEFAULT 0 ,
   `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
   PRIMARY KEY (`id`) )
@@ -87,6 +88,8 @@ CREATE  TABLE IF NOT EXISTS `presence_management`.`presence` (
   `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,
   PRIMARY KEY (`id`))
 ENGINE = InnoDB;
+
+
 -- -----------------------------------------------------
 -- Table `presence_management`.`user_has_promotion`
 -- -----------------------------------------------------
@@ -102,4 +105,5 @@ USE `presence_management` ;
 
 
 SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
