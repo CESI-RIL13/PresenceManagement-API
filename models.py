@@ -90,10 +90,10 @@ class Entity(object) :
 
         except MySQLdb.Error, e:
             try:
-                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                print ("MySQL Error [%d]: %s") % (e.args[0], e.args[1])
                 raise Error(400,"Error processing request")
             except IndexError:
-                print "MySQL Error: %s" % str(e)
+                print ("MySQL Error: %s") % str(e)
                 raise Error(400, "Error processing request")
 
         if curseur.rowcount == 0 :
@@ -146,10 +146,10 @@ class Entity(object) :
 
         except MySQLdb.Error, e:
             try:
-                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                print ("MySQL Error [%d]: %s") % (e.args[0], e.args[1])
                 raise Error(400,"Error occuring processing the request")
             except IndexError:
-                print "MySQL Error: %s" % str(e)
+                print ("MySQL Error: %s") % str(e)
                 raise Error(400,"Error occuring processing the request")
 
     def fromDb(obj,table):
@@ -180,7 +180,7 @@ class Entity(object) :
         return entity
 
     def __setstate__(self,states):
-        print "ok"
+        print ("ok")
 
     def _constructSelect(self):
         joinClause = self._getJoinClause(self)
@@ -230,9 +230,9 @@ class Entity(object) :
 
         except MySQLdb.Error, e:
             try:
-                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                print ("MySQL Error [%d]: %s") % (e.args[0], e.args[1])
             except IndexError:
-                print "MySQL Error: %s" % str(e)
+                print ("MySQL Error: %s") % str(e)
                 raise Error(400,"Error occuring processing the request")
 
         rows = curseur.fetchall()
