@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>Présences</title>
+	<meta name="description" content="">
+	<meta name="author" content="øvnislash">
+
+	<!-- libs -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="lib/chosen_v1.4.1/chosen.min.css" media="screen">
+	<script src="lib/chosen_v1.4.1/chosen.jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="lib/datetimepicker-master/jquery.datetimepicker.css"/ >
+	<script src="lib/datetimepicker-master/jquery.datetimepicker.js"></script>
+	
+	<!-- mes scripts -->
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="css/style.css" media="screen">
+</head>
+<body>
+<header class="bloc bloc--header">
+	<img src="img/logo-cesialternance.png" width="250" height="85">
+	<nav>
+		<ul class="menu">
+			<li class="menu__element">
+				<a class="menu__element__link" href="presences.html">Presences</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="participants.html">Participants</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="plannings.html">Plannings</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link menu__element__link--active" href="rooms.html">Rooms</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="utilisateurs.html">Utilisateurs</a>
+			</li>
+		</ul>
+	</nav>
+</header>
+<div class="bloc bloc--content bloc--content--presences">
+	<form class="filter">
+		<h2 class="filter__title">Filtres</h2>
+		<input class="filter__element filter__element--name" type="text" placeholder="Nom">
+		<select class="filter__element filter__element--promotions" multiple data-placeholder="Choisissez une promotion...">
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+		</select>
+		<label><input type="checkbox" class="filter__element--date">Date</label>
+		<label><input type="checkbox" class="filter__element--periode">Période</label>
+		<br>
+		<input class="filter__element filter__element--date--precise" type="text" placeholder="Date">
+		<input class="filter__element filter__element--date--debut" type="text" placeholder="Période début...">
+		<input class="filter__element filter__element--date--fin" type="text" placeholder="Période fin">
+		<button class="filter__element filter__element--submit" type="submit">Filtrer</button>
+	</form>
+	<ul class="list list--presences">
+		<li class="list__element">
+			<table width="100%">
+				<tr>
+					<th>Date</th>
+					<th>Promotion</th>
+					<th>Nom</th>
+					<th>Heure d'arrivée</th>
+				</tr>
+				<tr>
+					<td>Jeu. 12/03/15</td>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+					<td>11:49</td>
+				</tr>
+				<tr>
+					<td>Jeu. 12/03/15</td>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+					<td>11:49</td>
+				</tr><tr>
+					<td>Jeu. 12/03/15</td>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+					<td>11:49</td>
+				</tr><tr>
+					<td>Jeu. 12/03/15</td>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+					<td>11:49</td>
+				</tr><tr>
+					<td>Jeu. 12/03/15</td>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+					<td>11:49</td>
+				</tr><tr>
+					<td>Jeu. 12/03/15</td>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+					<td>11:49</td>
+				</tr><tr>
+					<td>Jeu. 12/03/15</td>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+					<td>11:49</td>
+				</tr>
+			</table>
+		</li>
+	</ul>
+</div>
+<script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>Connexion</title>
+	<meta name="description" content="">
+	<meta name="author" content="øvnislash">
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen">
+</head>
+<body>
+<header class="bloc bloc--header">
+	<img src="{{ url_for('static', filename='img/logo-cesialternance.png') }}" width="250" height="85">
+</header>
+<div class="bloc bloc--content">
+	<form class="connexion" action="{{ url_for('login')}}"  method="POST">
+			<label>Identifiant</label>
+			<input class="connexion__element" type="text" name="mail">
+			<p class="connexion__error connexion__error--identifiant">Identifiant inconnu</p>
+			<label>Mot de passe</label>
+			<input class="connexion__element" type="password" name="password">
+			<p class="connexion__error connexion__error--password">Mot de passe incorrect</p>
+			<button class="connexion__element connexion__element--submit" type="submit">Connexion</button>
+	</form>
+</div>
+</body>
+</html>

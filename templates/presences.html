@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>Présences</title>
+	<meta name="description" content="">
+	<meta name="author" content="øvnislash">
+
+	<!-- libs -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.min.css') }}" media="screen">
+	<script src="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.jquery.min.js') }}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.css') }}"/>
+	<script src="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.js') }}"></script>
+	
+	<!-- mes scripts -->
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen">
+</head>
+<body>
+<header class="bloc bloc--header">
+	<img src="{{ url_for('static', filename='img/logo-cesialternance.png') }}" width="250" height="85">
+	<nav>
+		<ul class="menu">
+			<li class="menu__element">
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('presences') }}">Presences</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Plannings</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('rooms') }}">Rooms</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
+			</li>
+		</ul>
+	</nav>
+</header>
+<div class="bloc bloc--content bloc--content--presences">
+	<form class="form form--filter" action="#"  method="GET">
+		<h2 class="form__title">Filtres</h2>
+		<input class="form__element form__element--name" type="text" placeholder="Nom">
+		<select class="form__element form__element--promotions" multiple data-placeholder="Choisissez une promotion...">
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+		</select>
+		<label><input type="checkbox" class="form__element--date">Date</label>
+		<label><input type="checkbox" class="form__element--periode">Période</label>
+		<br>
+		<input class="form__element form__element--date--precise" type="text" placeholder="Date">
+		<input class="form__element form__element--date--debut" type="text" placeholder="Période début...">
+		<input class="form__element form__element--date--fin" type="text" placeholder="Période fin">
+		<button class="form__element form__element--submit" type="submit">Filtrer</button>
+	</form>
+    <table class="list list--presences" width="100%">
+        <tr>
+            <th>Date</th>
+            <th>Promotion</th>
+            <th>Nom</th>
+            <th>Heure d'arrivée</th>
+        </tr>
+        {% for presence in presences %}
+        <tr>
+            <td>{{ presence.date.strftime('%d/%m/%Y') }}</td>
+            <td>{{ presence.getEntity('user').getPromotion().name }}</td>
+            <td>{{ presence.getEntity('user').fullname }}</td>
+            <td>{{ presence.date.strftime('%H:%M') }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

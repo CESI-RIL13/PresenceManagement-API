@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>Participant</title>
+	<meta name="description" content="">
+	<meta name="author" content="øvnislash">
+
+	<!-- libs -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="lib/chosen_v1.4.1/chosen.min.css" media="screen">
+	<script src="lib/chosen_v1.4.1/chosen.jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="lib/datetimepicker-master/jquery.datetimepicker.css"/ >
+	<script src="lib/datetimepicker-master/jquery.datetimepicker.js"></script>
+	
+	<!-- mes scripts -->
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="css/style.css" media="screen">
+</head>
+<body>
+<header class="bloc bloc--header">
+	<img src="img/logo-cesialternance.png" width="250" height="85">
+	<nav>
+		<ul class="menu">
+			<li class="menu__element">
+				<a class="menu__element__link" href="presences.html">Presences</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link menu__element__link--active" href="participants.html">Participants</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="plannings.html">Plannings</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="rooms.html">Rooms</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="utilisateurs.html">Utilisateurs</a>
+			</li>
+		</ul>
+	</nav>
+</header>
+<div class="bloc bloc--content bloc--content--participants">
+	<form class="form" action="#"  method="POST">
+		<h2 class="form__title">Jean Valjean</h2>
+		<p class="form__element form__infos">RIL 13</p>
+		<p class="form__element form__infos"><a href="mailto:jean.valjean@viacesi.fr">jean.valjean@viacesi.fr</a></p>
+		<button class="form__element form__element--submit" type="submit">Générer QRCode</button>
+	</form>
+</div>
+</body>
+</html>

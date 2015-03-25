@@ -1,0 +1,62 @@
+/* Global RESET */
+html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,time, mark, audio, video {	margin: 0;	padding: 0;	border: 0;	font-size: 100%;	font: inherit;	vertical-align: baseline;}/* HTML5 display-role reset for older browsers */article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {	display: block;}body {	line-height: 1;}ol, ul {	list-style: none;}blockquote, q {	quotes: none;}blockquote:before, blockquote:after,q:before, q:after {	content: '';	content: none;}table {	border-collapse: collapse;	border-spacing: 0;}
+
+/* Structure */
+body { background-color: #eee; padding: 0 20px 20px; font-family: Trebuchet, Helvetica, sans-serif; font-size: 14px; color:#555;}
+a { color: #099; }
+@media only screen and (max-width: 480px){
+	body { padding: 0 5px 5px; }
+}
+
+.bloc { background-color: #fff; min-height: 85px; }
+.bloc--header { text-align: center; padding: 50px 0;}
+.bloc--content { padding-bottom: 50px; }
+
+.menu { width:80%; margin: 0 auto; min-width: 300px; padding-top: 30px; text-align: center; }
+.menu__element {display: inline-block; width: 19%; }
+.menu__element__link { display: block; font-weight: bold; color: #099; text-decoration: none; font-size: 18px; height: 35px; }
+.menu__element__link:hover { text-decoration: underline; }
+.menu__element__link--active { color:#999; }
+@media only screen and (max-width: 720px){
+    .menu__element { width: 100%; }
+}
+
+.list { width:80%; margin: 0 auto; min-width: 300px; text-align: center; color:#555; }
+.list th,
+.list td { font-size: 15px; height: 30px; line-height: 30px; vertical-align: middle; }
+.list th { font-weight: bold; text-decoration: none; border-bottom: solid 1px black; }
+.list tr:nth-child(even) {background-color: #eee}
+@media only screen and (max-width: 720px){
+    .list { width: 100%; }
+}
+
+.form { width:80%; margin: 0 auto; min-width: 300px; border-bottom: solid 1px #099; margin-bottom: 50px; }
+.form__title { font-size: 18px; font-weight: bold; color:#099; border-bottom: solid 1px #099; }
+.form__element { margin:10px; padding: 0 0 0 10px; width: 22%; min-width: 200px; height:25px; font-size: 16px; }
+.form__element--submit { display: block; margin: 10px auto; }
+.form__element--date--precise,
+.form__element--date--debut,
+.form__element--date--fin { display: none; }
+.form__infos { margin:10px auto; }
+@media only screen and (max-width: 720px){
+    .form__element { width: 286px; margin: 10px auto; display: block;}
+}
+
+/* libs */
+.chosen-container-multi { margin:10px; top: -2px;}
+@media only screen and (max-width: 720px){
+    .chosen-container-multi { width: 300px !important; margin: 10px auto; padding: 0; display: block; }
+}
+
+/* Connexion */
+.connexion { width: 30%; margin: 0 auto; min-width: 300px; text-align: center; font-size: 18px; font-weight: bold; }
+.connexion__element { width: 95%; height: 40px; margin: 10px 0 20px; padding-left: 5%; font-size: 20px; color:#999; }
+.connexion__element--submit { width: 100%; line-height: 40px; cursor: pointer; text-transform: uppercase; font-size: 18px; }
+.connexion__error { margin-bottom: 30px; color: red; display: none; }
+
+/* Presences */
+.list--presences th,
+.list--presences td {width: 20%}
+
+/* Participant */
+.

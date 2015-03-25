@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="utf-8">
+	<title>Participants</title>
+	<meta name="description" content="">
+	<meta name="author" content="øvnislash">
+
+	<!-- libs -->
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+	<link rel="stylesheet" href="lib/chosen_v1.4.1/chosen.min.css" media="screen">
+	<script src="lib/chosen_v1.4.1/chosen.jquery.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="lib/datetimepicker-master/jquery.datetimepicker.css"/ >
+	<script src="lib/datetimepicker-master/jquery.datetimepicker.js"></script>
+	
+	<!-- mes scripts -->
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="css/style.css" media="screen">
+</head>
+<body>
+<header class="bloc bloc--header">
+	<img src="img/logo-cesialternance.png" width="250" height="85">
+	<nav>
+		<ul class="menu">
+			<li class="menu__element">
+				<a class="menu__element__link" href="presences.html">Presences</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link menu__element__link--active" href="participants.html">Participants</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="plannings.html">Plannings</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="rooms.html">Rooms</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="utilisateurs.html">Utilisateurs</a>
+			</li>
+		</ul>
+	</nav>
+</header>
+<div class="bloc bloc--content bloc--content--participants">
+	<form class="form" action="#"  method="POST">
+		<h2 class="form__title">Filtres</h2>
+		<input class="form__element form__element--name" type="text" placeholder="Nom">
+		<select class="form__element form__element--promotions" multiple data-placeholder="Choisissez une promotion...">
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+			<option>RIL 13</option>
+			<option>RAR 13</option>
+			<option>DIM 11</option>
+		</select>
+		<button class="form__element form__element--submit" type="submit">Filtrer</button>
+	</form>
+	<form class="form"  action="#"  method="POST">
+		<h2 class="form__title">Upload</h2>
+		<input class="form__element" type="file">
+		<button class="form__element form__element--submit" type="submit">Envoyer</button>
+	</form>
+	<ul class="list list--presences">
+		<li class="list__element">
+			<table width="100%">
+				<tr>
+					<th>Promotion</th>
+					<th>Nom</th>
+				</tr>
+				<tr>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+				</tr>
+				<tr>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+				</tr>
+				<tr>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+				</tr>
+				<tr>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+				</tr>
+				<tr>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+				</tr>
+				<tr>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+				</tr>
+				<tr>
+					<td>RIL13</td>
+					<td>Jean VALJEAN</td>
+				</tr>
+			</table>
+		</li>
+	</ul>
+</div>
+<script src="js/script.js"></script>
+</body>
+</html>
