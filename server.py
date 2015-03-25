@@ -8,11 +8,45 @@ import jsonpickle
 
 app = Flask(__name__)
 
+@app.before_request
+def detect_user_login():
+
+    if request.endpoint == 'static':
+        return
+
+    if not 'user_id' in session and request.endpoint != 'login':
+        return redirect(url_for('login'))
+
+    if 'user_id' in session and request.endpoint == 'login':
+        return redirect(url_for('hello'))
+
 @app.route("/")
 def hello():
     # print datetime.strptime(request.headers.get('If-Modified-Since'), "%d %b %Y %H:%M:%S GMT")
-    session['test'] = 'test'
-    return 'Circulez il n\'y a rien à voir !'
+
+    user = User()
+    user.id = session['user_id']
+    user.load()
+
+    return 'Hello %s' % user.fullname
+
+@app.route('/login/', methods = ['GET', 'POST'])
+def login():
+    if request.headers['Accept'].split(',')[0] == 'text/html':
+
+        if request.method == 'GET':
+            return render_template('index.html')
+
+        if request.method == 'POST':
+            user = User()
+            if user.login(request.form['mail'],request.form['password']):
+                session['user_id'] = user.id
+                return redirect(url_for('presences'))
+            else:
+                return "Invalid password",401
+
+    else:
+        return 'logue toi !',401
 
 @app.route('/users/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
 @app.route('/users/<identifiant>', methods = ['GET', 'PUT', 'DELETE'])
@@ -66,12 +100,16 @@ def users(identifiant=None):
 @app.route('/presences/', methods = ['GET', 'POST'])
 def presences():
     if request.method == 'GET':
-        try:
-            return jsonpickle.encode(Presence().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
-        except Error, e:
-            return e.value,e.code
+        if request.headers['Accept'].split(',')[0] == 'text/html':
+            presences = Presence().search()
+            return render_template('presences.html', presences = presences)
+        else:
+            try:
+                return jsonpickle.encode(Presence().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+            except Error, e:
+                return e.value,e.code
 
-    elif request.method == 'POST' or request.method == 'PUT':
+    elif request.method == 'POST':
 
         entities = jsonpickle.decode(request.data)
         presences = []
@@ -179,9 +217,9 @@ def rooms():
         return jsonpickle.encode(rooms,unpicklable=False),201
 
 # set the secret key.  keep this really secret:
-app.secret_key = 'A0Zr98j/3yX R~XHH!jmN]LWX/,?RT'
+app.secret_key = 'C7PZnXhzuRC7Tf3L'
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host = "10.133.129.38")
+    app.run(host = "")
 

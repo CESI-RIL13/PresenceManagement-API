@@ -6,7 +6,9 @@ from datetime import datetime
 import calendar
 import jsonpickle
 import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
+import importlib
 from jsonpickle import handlers
+from passlib.apps import custom_app_context as pwd_context
 
 
 class DatetimeHandler(handlers.BaseHandler):
@@ -80,6 +82,17 @@ class Entity(object) :
     def setBelongsTo(self,value):
         self.__belongsTo.append(value)
 
+    def getEntity(self, entityName):
+
+        clzz = globals()[entityName.title()]
+        entity = clzz()
+        entity.id = getattr(self, entityName + '_id')
+
+        if entity.load():
+            return entity
+        else:
+            return False
+
     def load(self):
 
         if self.id == None or self.id == "":
@@ -129,6 +142,11 @@ class Entity(object) :
         for column in self.getColumns():
             if getattr(self, column) == None or column == "updated" or self.getColumns().count(column) == 0:
                 continue
+
+            if column == "password":
+                setattr(self, column, User.hash_password(getattr(self, column)))
+                print getattr(self, column)
+
             values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
 
 
@@ -217,7 +235,7 @@ class Entity(object) :
                     if entity.getHasMany().count(self.getTable()) > 0:
                         jointure = "%s_has_%s" % (self.getTable(),domain)
                         if(self._checkTable(jointure) == False):
-                            jointure = "%s_has_%s" % (domain,entity.getTable())
+                            jointure = "%s_has_%s" % (domain,self.getTable())
 
                         where.append("%s."%(jointure) + key + " IN ( '" + "' , '".join(subClause) +"' )")
                     else:
@@ -236,6 +254,8 @@ class Entity(object) :
             date = datetime.strptime(lastUpdate, "%d %b %Y %H:%M:%S GMT")
             where.append("%s.updated > '%s'"%(self.__table,date.strftime("%Y-%m-%d %H:%M:%S")))
 
+        #print where
+
         return where
 
     def _executeSearch(self,request = None,where = []):
@@ -246,7 +266,7 @@ class Entity(object) :
         if len(where)>0:
             request += " WHERE " + " AND ".join(where)
 
-        print request
+        #print request
 
         try:
             curseur.execute(request)
@@ -297,11 +317,48 @@ class Entity(object) :
         return joinClause
 
 class User(Entity) :
+
     def __init__(self):
         Entity.__init__(self,'user')
         self.setHasMany('promotion')
         self.setHasMany('presence')
         self.setHasMany('scheduling')
+
+    def login(self,mail,password):
+        if password == '' or password == None:
+            return False
+        try:
+            curseur.execute("SELECT id, password FROM user WHERE mail = '%s'" % (mail))
+
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                raise Error(400,"Error processing request")
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400, "Error processing request")
+
+        if curseur.rowcount == 0 :
+            return False
+        else:
+            response = curseur.fetchone()
+            self.id = response['id']
+            self.password = response['password']
+            if self.password != None and self.password != '':
+                return self.verify_password(password)
+            else:
+                return False
+
+    def hash_password(password):
+        return pwd_context.encrypt(password)
+    hash_password = staticmethod(hash_password)
+
+    def verify_password(self, password):
+        return pwd_context.verify(password, self.password)
+
+    def getPromotion(self):
+        promotion = Promotion().search(args = {'user_id':self.id})
+        return promotion[0]
 
 class Presence(Entity) :
     def __init__(self):
