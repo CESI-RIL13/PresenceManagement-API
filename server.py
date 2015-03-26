@@ -101,8 +101,19 @@ def users(identifiant=None):
 def presences():
     if request.method == 'GET':
         if request.headers['Accept'].split(',')[0] == 'text/html':
-            presences = Presence().search()
-            return render_template('presences.html', presences = presences)
+            presences = []
+            promotions = []
+
+            try:
+                promotions = Promotion().search()
+                presences = Presence().search(request.args)
+                return render_template('presences.html', presences = presences, promotions = promotions)
+            except Error, e:
+                print e
+                presences = False
+            finally:
+                return render_template('presences.html', presences = presences, promotions = promotions)
+
         else:
             try:
                 return jsonpickle.encode(Presence().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
@@ -221,5 +232,5 @@ app.secret_key = 'C7PZnXhzuRC7Tf3L'
 
 if __name__ == "__main__":
     app.debug = True
-    app.run(host = "")
+    app.run(host = "192.168.131.1")
 
