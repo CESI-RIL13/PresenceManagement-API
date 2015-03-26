@@ -46,7 +46,7 @@
 		<input class="form__element form__element--name" type="text" placeholder="Nom" name="fullname" value="{{ request.args['fullname']}}">
 		<select class="form__element form__element--promotions" multiple data-placeholder="Choisissez une promotion..." name="promotion_id">
             {% for promotion in promotions %}
-                <option value="{{ promotion.id }}">{{ promotion.name }}</option>
+                <option value="{{ promotion.id }}" {{'%s' % 'selected=true' if promotion.id in request.args.getlist('promotion_id')}}>{{ promotion.name }}</option>
             {% endfor %}
 		</select>
 		<label><input type="checkbox" class="form__element--date" name="checkbox" value="date" {{'%s' % 'checked=true' if request.args['checkbox'] == 'date'}}>Date</label>
