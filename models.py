@@ -3,11 +3,9 @@
 __author__ = 'Dos Santos Julien'
 from config import connexion, curseur
 from datetime import datetime
-from werkzeug import datastructures
 import calendar
 import jsonpickle
 import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
-import importlib
 from jsonpickle import handlers
 from passlib.apps import custom_app_context as pwd_context
 import pyqrcode
@@ -147,14 +145,6 @@ class Entity(object) :
                 setattr(self, column, pwd_context.encrypt(getattr(self, column)))
 
             values.append(column + " = '" + MySQLdb.escape_string(str(getattr(self, column))) + "'")
-
-        if self.getTable() == 'user' and (self.role == 'stagiaire' or self.role == 'intervenant'):
-            img = pyqrcode.create(self.id)
-            img.png(self.fullname+".png",scale=8)
-            file_object = open(self.fullname+".png", 'r')
-            values.append("qrcode = '" + file_object.read().encode("base64") + "'")
-            file_object.close()
-            os.remove(self.fullname+".png")
 
         request = "INSERT INTO " + self.getTable() + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
         #print request
@@ -375,6 +365,26 @@ class User(Entity) :
     def getPromotion(self):
         promotion = Promotion().search(args = {'user_id':self.id})
         return promotion[0]
+
+    def save(self):
+
+        if Entity.save(self) and (self.role == 'stagiaire' or self.role == 'intervenant'):
+            img = pyqrcode.create(self.id)
+            img.png(self.fullname+".png",scale=8)
+            file_object = open(self.fullname+".png", 'r')
+            try:
+                curseur.execute("UPDATE user SET qrcode = '%s' WHERE id = '%s'" % (file_object.read().encode("base64"),self.id))
+            except MySQLdb.Error, e:
+                try:
+                    print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                    raise Error(400,"Error occuring processing the request")
+                except IndexError:
+                    print "MySQL Error: %s" % str(e)
+                    raise Error(400,"Error occuring processing the request")
+            file_object.close()
+            os.remove(self.fullname+".png")
+            return True
+
 
 class Presence(Entity) :
     def __init__(self):
