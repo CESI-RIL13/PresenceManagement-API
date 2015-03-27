@@ -77,7 +77,7 @@
             {% for presence in presences %}
                 <tr>
                     <td>{{ presence.date.strftime('%d/%m/%Y') }}</td>
-                    <td><a href="{{ url_for('promotions', id=presence.getEntity('user').getPromotion().id,)}}">{{ presence.getEntity('user').getPromotion().name }}</a></td>
+                    <td><a href="{{ url_for('promotions', id=presence.getEntity('user').getPromotion().id,)}}">{{ presence.getEntity('user').getPromotion(True).name }}</a></td>
                     <td><a href="{{ url_for('users', id=presence.getEntity('user').id,)}}">{{ presence.getEntity('user').fullname }}</a></td>
                     <td>{{ presence.date.strftime('%H:%M') }}</td>
                 </tr>

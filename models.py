@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__author__ = 'Dos Santos Julien'
 from __future__ import unicode_literals
+__author__ = 'Dos Santos Julien'
 from config import connexion, curseur
 from datetime import datetime
 import calendar
@@ -264,7 +264,7 @@ class Entity(object) :
         if len(where)>0:
             request += " WHERE " + " AND ".join(where)
 
-        print request
+        #print request
 
         try:
             curseur.execute(request)
@@ -363,9 +363,31 @@ class User(Entity) :
     def verify_password(self, password):
         return pwd_context.verify(password, self.password)
 
-    def getPromotion(self):
-        promotion = Promotion().search(args = {'user_id':self.id})
-        return promotion[0]
+    def getPromotion(self,current = False):
+        if current:
+                curseur.execute("SELECT promotion_id FROM user_has_promotion WHERE user_id = '%s' AND current = 1" % self.id)
+                if curseur.rowcount == 1:
+                    result = curseur.fetchone()
+                    promotion = Promotion()
+                    promotion.id = result['promotion_id']
+                    promotion.load()
+                    return promotion
+                else:
+                    return False
+        else:
+            curseur.execute("SELECT promotion_id FROM user_has_promotion WHERE user_id = '%s'" % self.id)
+            if curseur.rowcount == 0:
+                return False
+            else:
+                results = curseur.fetchall()
+                promotions = []
+                for result in results:
+                    promotion = Promotion()
+                    promotion.id = result['promotion_id']
+                    promotion.load()
+                    promotions.append(promotion)
+
+                return promotions
 
     def save(self):
 
@@ -385,6 +407,22 @@ class User(Entity) :
             file_object.close()
             os.remove(self.fullname+".png")
             return True
+
+        if self.promotion_id and self.load() and self.role == 'stagiaire':
+            promotions = self.getPromotion()
+            for promotion in promotions:
+                try:
+                    if promotion.id == self.promotion_id:
+                        curseur.execute("UPDATE user_has_promotion SET current = 1 WHERE user_id = '%s' AND promotion_id = '%s'" % (self.id,promotion.id))
+                    else:
+                        curseur.execute("UPDATE user_has_promotion SET current = 0 WHERE user_id = '%s' AND promotion_id = '%s'" % (self.id,promotion.id))
+                except MySQLdb.Error, e:
+                    try:
+                        print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                        raise Error(400,"Error occuring processing the request")
+                    except IndexError:
+                        print "MySQL Error: %s" % str(e)
+                        raise Error(400,"Error occuring processing the request")
 
 
 class Presence(Entity) :
