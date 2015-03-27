@@ -7,6 +7,7 @@ from models import *
 import jsonpickle
 
 app = Flask(__name__)
+app.config['JSON_AS_ASCII'] = False
 
 @app.before_request
 def detect_user_login():
@@ -217,31 +218,80 @@ def schedulings():
         return jsonpickle.encode(schedulings,unpicklable=False),201
 
 @app.route('/rooms/', methods = ['GET', 'POST', 'PUT', 'DELETE'])
-def rooms():
-    if request.method == 'GET':
-        try:
-            return jsonpickle.encode(Room().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
-        except Error,e:
-            return e.value,e.code
+@app.route('/rooms/<identifiant>', methods = ['GET', 'POST', 'PUT', 'DELETE'])
+def rooms(identifiant=None):
 
-    elif request.method == 'POST' or request.method == 'PUT':
-        entities = jsonpickle.decode(request.data)
-        rooms = []
-        for entity in entities:
-            room = Room()
-            room.fromJson(entity)
+    if identifiant:
+
+        room = Room()
+        room.id = identifiant
+
+        if request.method == 'GET':
+            try:
+                room.load()
+                if request.headers['Accept'].split(',')[0] == 'text/html':
+                     return render_template('room.html', room = room, save = True)
+            except Error, e:
+                return e.value,e.code
+            else:
+                return room.asJson(), 200
+
+        elif request.method == 'POST':
+            if request.form :
+                try:
+                    room.load()
+                    room.raspberry_id = request.form['rapsberry_id']
+                    room.save()
+                    if request.headers['Accept'].split(',')[0] == 'text/html':
+                         return render_template('room.html', room = room)
+                except Error, e:
+                    return e.value,e.code
+                else:
+                    return room.asJson(), 200
+
+
+        elif request.method == 'PUT':
+            room.fromJson(request.data)
             try:
                 room.save()
             except Error,e:
                 return e.value,e.code
+            else:
+                return promotion.asJson(),201
 
-            rooms.append(room.id)
-        return jsonpickle.encode(rooms,unpicklable=False),201
+    else :
+        if request.method == 'GET':
+            if request.headers['Accept'].split(',')[0] == 'text/html':
+                rooms = Room().search()
+                return render_template('rooms.html', rooms = rooms)
+            else:
+                try:
+                    return jsonpickle.encode(Room().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+                except Error,e:
+                    return e.value,e.code
+
+        elif request.method == 'POST' or request.method == 'PUT':
+            entities = jsonpickle.decode(request.data)
+            rooms = []
+            for entity in entities:
+                room = Room()
+                room.fromJson(entity)
+                try:
+                    room.save()
+                except Error,e:
+                    return e.value,e.code
+
+                rooms.append(room.id)
+            return jsonpickle.encode(rooms,unpicklable=False),201
 
 # set the secret key.  keep this really secret:
 app.secret_key = 'C7PZnXhzuRC7Tf3L'
 
 if __name__ == "__main__":
     app.debug = True
+<<<<<<< HEAD
     app.run(host = "10.133.128.91")
 
+=======
+    app.run(host = "")
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8

@@ -61,7 +61,7 @@ var dateChecked = function () {
 	else {
 		$(".form__element--date--precise").css('display','none');
 	}
-}
+};
 
 var periodeChecked = function () {
 	if ($(".form__element--periode").is(':checked')) {
@@ -74,7 +74,7 @@ var periodeChecked = function () {
 	else {
 		$(".form__element--date--debut, .form__element--date--fin").css('display','none');
 	}
-}
+};
 
 $(".form__element--periode").change(function(){
 	periodeChecked();

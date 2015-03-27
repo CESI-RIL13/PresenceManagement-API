@@ -2,12 +2,17 @@
 <html lang="fr">
 <head>
 	<meta charset="utf-8">
+<<<<<<< HEAD
 	<title>Participant</title>
+=======
+	<title>Promotions</title>
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8
 	<meta name="description" content="">
 	<meta name="author" content="øvnislash">
 
 	<!-- libs -->
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<<<<<<< HEAD
 	<link rel="stylesheet" href="lib/chosen_v1.4.1/chosen.min.css" media="screen">
 	<script src="lib/chosen_v1.4.1/chosen.jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="lib/datetimepicker-master/jquery.datetimepicker.css"/ >
@@ -39,10 +44,44 @@
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="utilisateurs.html">Utilisateurs</a>
+=======
+	<link rel="stylesheet" href="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.min.css') }}" media="screen">
+	<script src="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.jquery.min.js') }}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.css') }}"/>
+	<script src="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.js') }}"></script>
+
+	<!-- mes scripts -->
+	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen">
+</head>
+<body>
+<header class="bloc bloc--header">
+	<img src="{{ url_for('static', filename='img/logo-cesialternance.png') }}" width="250" height="85">
+	<nav>
+		<ul class="menu">
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('presences') }}">Presences</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
+			</li>
+            <li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Plannings</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('rooms') }}">Rooms</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8
 			</li>
 		</ul>
 	</nav>
 </header>
+<<<<<<< HEAD
 <div class="bloc bloc--content bloc--content--room">
 	<form class="form form--room" action="#"  method="POST">
 		<h2 class="form__title">Cap Ferret</h2>
@@ -51,5 +90,16 @@
 		<button class="form__element form__element--submit" type="submit">Enregistrer</button>
 	</form>
 </div>
+=======
+<div class="bloc bloc--content bloc--content--rooms">
+    <form class="form form--room" method="POST">
+		<h2 class="form__title">{{ room.name }}</h2>
+		<label class="form__element form--promotion__element" for="mac-adress">Adresse MAC</label>
+		<input class="form__element form--promotion__element" type="text" id="mac-adress" name="rapsberry_id" value="{{ room.raspberry_id }}">
+		<button class="form__element form__element--submit" type="submit" id="room-submit">Enregistrer</button>
+	</form>
+</div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8
 </body>
 </html>

@@ -145,7 +145,7 @@ class Entity(object) :
             if column == "password":
                 setattr(self, column, User.hash_password(getattr(self, column)))
 
-            values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
+            values.append(column + " = '" + MySQLdb.escape_string(str(getattr(self, column))) + "'")
 
             if self.__table == 'user':
                 img = pyqrcode.create(self.id)
@@ -267,7 +267,7 @@ class Entity(object) :
         if len(where)>0:
             request += " WHERE " + " AND ".join(where)
 
-        #print request
+        print request
 
         try:
             curseur.execute(request)

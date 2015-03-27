@@ -8,37 +8,51 @@
 
 	<!-- libs -->
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+<<<<<<< HEAD
 	<link rel="stylesheet" href="lib/chosen_v1.4.1/chosen.min.css" media="screen">
 	<script src="lib/chosen_v1.4.1/chosen.jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="lib/datetimepicker-master/jquery.datetimepicker.css"/ >
 	<script src="lib/datetimepicker-master/jquery.datetimepicker.js"></script>
+=======
+	<link rel="stylesheet" href="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.min.css') }}" media="screen">
+	<script src="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.jquery.min.js') }}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.css') }}"/>
+	<script src="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.js') }}"></script>
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8
 
 	<!-- mes scripts -->
 	<link rel="shortcut icon" href="favicon.ico">
-	<link rel="stylesheet" href="css/style.css" media="screen">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen">
 </head>
 <body>
 <header class="bloc bloc--header">
-	<img src="img/logo-cesialternance.png" width="250" height="85">
+	<img src="{{ url_for('static', filename='img/logo-cesialternance.png') }}" width="250" height="85">
 	<nav>
 		<ul class="menu">
 			<li class="menu__element">
-				<a class="menu__element__link" href="presences.html">Presences</a>
+				<a class="menu__element__link" href="{{ url_for('presences') }}">Presences</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="participants.html">Participants</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
+			</li>
+            <li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
 			</li>
 			<li class="menu__element">
+<<<<<<< HEAD
 				<a class="menu__element__link" href="promotions.html">Promotions</a>
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="plannings.html">Plannings</a>
+=======
+				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Plannings</a>
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link menu__element__link--active" href="rooms.html">Rooms</a>
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('rooms') }}">Rooms</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="utilisateurs.html">Utilisateurs</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
 			</li>
 		</ul>
 	</nav>
@@ -49,6 +63,7 @@
 			<th>Room</th>
 			<th>Adresse mac</th>
 		</tr>
+<<<<<<< HEAD
 		<tr>
 			<td>Cap Ferret</td>
 			<td>00:15:2b:3a:42</td>
@@ -77,6 +92,14 @@
 			<td>Cap Ferret</td>
 			<td>00:15:2b:3a:42</td>
 		</tr>
+=======
+        {% for room in rooms %}
+        <tr>
+            <td><a href="/rooms/{{ room.id }}">{{ room.name }}</a></td>
+            <td>{{ room.raspberry_id }}</td>
+        </tr>
+        {% endfor %}
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8
 	</table>
 </div>
 <script src="js/script.js"></script>
