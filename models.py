@@ -12,6 +12,7 @@ from jsonpickle import handlers
 from passlib.apps import custom_app_context as pwd_context
 import pyqrcode
 import os
+import ConfigParser
 
 class DatetimeHandler(handlers.BaseHandler):
     def flatten(self, obj, data):
@@ -215,7 +216,9 @@ class Entity(object) :
         print "ok"
 
     def _checkTable(self,tableName):
-        curseur.execute("SHOW TABLES FROM presence_management WHERE Tables_in_presence_management = '%s'"%tableName)
+        cfg = ConfigParser.ConfigParser()
+        cfg.read('conf.ini')
+        curseur.execute("SHOW TABLES FROM " + cfg.get('SQL','database') + " WHERE Tables_in_" + cfg.get('SQL','database') + " = '%s'"%tableName)
         return curseur.rowcount > 0
 
     def _constructSelect(self):
