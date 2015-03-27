@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__author__ = 'Dos Santos Julien'
 from __future__ import unicode_literals
+__author__ = 'Dos Santos Julien'
 import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
 import ConfigParser
 
