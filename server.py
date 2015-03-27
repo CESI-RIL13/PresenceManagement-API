@@ -6,9 +6,14 @@ from flask import *
 from models import *
 import jsonpickle
 import ConfigParser
-
+import os
+from Importation import *
+from werkzeug.utils import secure_filename
+UPLOAD_FOLDER = '/tmp/'
+ALLOWED_EXTENSIONS = set(['csv'])
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 @app.before_request
 def detect_user_login():
@@ -35,6 +40,9 @@ def detect_auth_client():
 
     if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
         return redirect(url_for('login'))
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
 @app.route("/")
 def hello():
@@ -111,18 +119,26 @@ def users(identifiant=None):
                     return e.value,e.code
 
         elif request.method == 'POST' or request.method == 'PUT':
-            entities = jsonpickle.decode(request.data)
-            users = []
-            for entity in entities:
-                user = User()
-                user.fromJson(entity)
-                try:
-                    user.save()
-                except Error, e:
-                    return e.value,e.code
+            if request.headers['Accept'].split(',')[0] == 'text/html':
+                file = request.files['file']
+                if file and allowed_file(file.filename):
+                    filename = secure_filename(file.filename)
+                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                    return redirect(url_for('uploaded_file',
+                                            filename=filename))
+            else:
+                entities = jsonpickle.decode(request.data)
+                users = []
+                for entity in entities:
+                    user = User()
+                    user.fromJson(entity)
+                    try:
+                        user.save()
+                    except Error, e:
+                        return e.value,e.code
 
-                users.append(user.id)
-            return jsonpickle.encode(users,unpicklable=False),201
+                    users.append(user.id)
+                return jsonpickle.encode(users,unpicklable=False),201
 
 @app.route('/presences/', methods = ['GET', 'POST'])
 def presences():
