@@ -29,6 +29,9 @@
 				<a class="menu__element__link" href="participants.html">Participants</a>
 			</li>
 			<li class="menu__element">
+				<a class="menu__element__link" href="promotions.html">Promotions</a>
+			</li>
+			<li class="menu__element">
 				<a class="menu__element__link menu__element__link--active" href="plannings.html">Plannings</a>
 			</li>
 			<li class="menu__element">
@@ -41,10 +44,9 @@
 	</nav>
 </header>
 <div class="bloc bloc--content bloc--content--presences">
-	<form class="filter">
-		<h2 class="filter__title">Filtres</h2>
-		<input class="filter__element filter__element--name" type="text" placeholder="Nom">
-		<select class="filter__element filter__element--promotions" multiple data-placeholder="Choisissez une promotion...">
+	<form class="form" action="#"  method="POST">
+		<h2 class="form__title">Filtres</h2>
+		<select class="form__element form__element--promotions" multiple data-placeholder="Choisissez une promotion...">
 			<option>RIL 13</option>
 			<option>RAR 13</option>
 			<option>DIM 11</option>
@@ -58,63 +60,69 @@
 			<option>RAR 13</option>
 			<option>DIM 11</option>
 		</select>
-		<label><input type="checkbox" class="filter__element--date">Date</label>
-		<label><input type="checkbox" class="filter__element--periode">Période</label>
+		<select class="form__element form__element--rooms" multiple data-placeholder="Choisissez une salle...">
+			<option>Cap Ferret</option>
+			<option>Lacanau</option>
+			<option>Bordeaux</option>
+		</select>
+		<label><input type="checkbox" class="form__element--date">Date</label>
+		<label><input type="checkbox" class="form__element--periode">Période</label>
 		<br>
-		<input class="filter__element filter__element--date--precise" type="text" placeholder="Date">
-		<input class="filter__element filter__element--date--debut" type="text" placeholder="Période début...">
-		<input class="filter__element filter__element--date--fin" type="text" placeholder="Période fin">
-		<button class="filter__element filter__element--submit" type="submit">Filtrer</button>
+		<input class="form__element form__element--date--precise" type="text" placeholder="Date">
+		<input class="form__element form__element--date--debut" type="text" placeholder="Période début...">
+		<input class="form__element form__element--date--fin" type="text" placeholder="Période fin">
+		<button class="form__element form__element--submit" type="submit">Filtrer</button>
 	</form>
-	<ul class="list list--presences">
-		<li class="list__element">
-			<table width="100%">
-				<tr>
-					<th>Date</th>
-					<th>Promotion</th>
-					<th>Nom</th>
-					<th>Heure d'arrivée</th>
-				</tr>
-				<tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr>
-				<tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr>
-			</table>
-		</li>
-	</ul>
+	<form class="form"  action="#"  method="POST">
+		<h2 class="form__title">Upload</h2>
+		<input class="form__element" type="file">
+		<button class="form__element form__element--submit" type="submit">Envoyer</button>
+	</form>
+	<table class="list list--plannings" width="100%">
+		<tr>
+			<th>Date</th>
+			<th>Promotion</th>
+			<th>Room</th>
+			<th>Horraire</th>
+		</tr>
+		<tr>
+			<td>Jeu. 12/03/15</td>
+			<td>RIL13</td>
+			<td>Cap Ferret</td>
+			<td>8:30 - 12h30</td>
+		</tr>
+		<tr>
+			<td>Jeu. 12/03/15</td>
+			<td>RIL13</td>
+			<td>Cap Ferret</td>
+			<td>8:30 - 12h30</td>
+		</tr><tr>
+			<td>Jeu. 12/03/15</td>
+			<td>RIL13</td>
+			<td>Cap Ferret</td>
+			<td>8:30 - 12h30</td>
+		</tr><tr>
+			<td>Jeu. 12/03/15</td>
+			<td>RIL13</td>
+			<td>Cap Ferret</td>
+			<td>8:30 - 12h30</td>
+		</tr><tr>
+			<td>Jeu. 12/03/15</td>
+			<td>RIL13</td>
+			<td>Cap Ferret</td>
+			<td>8:30 - 12h30</td>
+		</tr><tr>
+			<td>Jeu. 12/03/15</td>
+			<td>RIL13</td>
+			<td>Cap Ferret</td>
+			<td>8:30 - 12h30</td>
+		</tr><tr>
+			<td>Jeu. 12/03/15</td>
+			<td>RIL13</td>
+			<td>Cap Ferret</td>
+			<td>8:30 - 12h30</td>
+		</tr>
+	</table>
 </div>
 <script src="js/script.js"></script>
 </body>

@@ -2,7 +2,7 @@
 html, body, div, span, applet, object, iframe,h1, h2, h3, h4, h5, h6, p, blockquote, pre,a, abbr, acronym, address, big, cite, code,del, dfn, em, img, ins, kbd, q, s, samp,small, strike, strong, sub, sup, tt, var,b, u, i, center,dl, dt, dd, ol, ul, li,fieldset, form, label, legend,table, caption, tbody, tfoot, thead, tr, th, td,article, aside, canvas, details, embed, figure, figcaption, footer, header, hgroup, menu, nav, output, ruby, section, summary,time, mark, audio, video {	margin: 0;	padding: 0;	border: 0;	font-size: 100%;	font: inherit;	vertical-align: baseline;}/* HTML5 display-role reset for older browsers */article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section {	display: block;}body {	line-height: 1;}ol, ul {	list-style: none;}blockquote, q {	quotes: none;}blockquote:before, blockquote:after,q:before, q:after {	content: '';	content: none;}table {	border-collapse: collapse;	border-spacing: 0;}
 
 /* Structure */
-body { background-color: #eee; padding: 0 20px 20px; font-family: Trebuchet, Helvetica, sans-serif; font-size: 14px; color:#555;}
+body { background-color: #fff; padding: 0 20px 20px; font-family: Trebuchet, Helvetica, sans-serif; font-size: 14px; color:#555; }
 a { color: #099; }
 @media only screen and (max-width: 480px){
 	body { padding: 0 5px 5px; }
@@ -13,7 +13,7 @@ a { color: #099; }
 .bloc--content { padding-bottom: 50px; }
 
 .menu { width:80%; margin: 0 auto; min-width: 300px; padding-top: 30px; text-align: center; }
-.menu__element {display: inline-block; width: 19%; }
+.menu__element {display: inline-block; width: 16%; }
 .menu__element__link { display: block; font-weight: bold; color: #099; text-decoration: none; font-size: 18px; height: 35px; }
 .menu__element__link:hover { text-decoration: underline; }
 .menu__element__link--active { color:#999; }
@@ -59,4 +59,5 @@ a { color: #099; }
 .list--presences td {width: 20%}
 
 /* Participant */
-.
+.list--participants th:first-child,
+.list--participants td:first-child { width: 40%; }

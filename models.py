@@ -3,13 +3,16 @@
 __author__ = 'Dos Santos Julien'
 from config import connexion, curseur
 from datetime import datetime
+from werkzeug import datastructures
 import calendar
 import jsonpickle
 import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
 import importlib
 from jsonpickle import handlers
 from passlib.apps import custom_app_context as pwd_context
-
+import pyqrcode
+import os
+import ConfigParser
 
 class DatetimeHandler(handlers.BaseHandler):
     def flatten(self, obj, data):
@@ -40,7 +43,7 @@ class Entity(object) :
 
     def loadColumns(self):
 
-        curseur.execute("SHOW COLUMNS FROM " + self.__table)
+        curseur.execute("SHOW COLUMNS FROM " + self.getTable())
 
         if curseur.rowcount == 0 :
             return False
@@ -63,9 +66,6 @@ class Entity(object) :
 
     def getColumns(self):
         return self.__columns
-
-    def getTable(self):
-        return self.__table
 
     def setHasMany(self,value):
         self.__hasMany.append(value)
@@ -99,7 +99,7 @@ class Entity(object) :
             raise Error(400,"No id providing to manage the request")
 
         try:
-            curseur.execute("SELECT * FROM " + self.__table +" WHERE id='%s'"%self.id)
+            curseur.execute("SELECT * FROM " + self.getTable() +" WHERE id='%s'"%self.id)
 
         except MySQLdb.Error, e:
             try:
@@ -127,7 +127,7 @@ class Entity(object) :
         return True
 
     def search(self, args = {},lastUpdate = None):
-
+        args = self._cleanArgs(args.copy())
         request = self._constructSelect()
         where = self._constructWhereClause(args,lastUpdate)
 
@@ -143,15 +143,22 @@ class Entity(object) :
             if getattr(self, column) == None or column == "updated" or self.getColumns().count(column) == 0:
                 continue
 
-            if column == "password":
-                setattr(self, column, User.hash_password(getattr(self, column)))
-                print getattr(self, column)
+            if column == "password" or column == "raspberry_id":
+                setattr(self, column, pwd_context.encrypt(getattr(self, column)))
 
-            values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
+            values.append(column + " = '" + MySQLdb.escape_string(str(getattr(self, column))) + "'")
 
+        if self.getTable() == 'user' and (self.role == 'stagiaire' or self.role == 'intervenant'):
+            img = pyqrcode.create(self.id)
+            img.png(self.fullname+".png",scale=8)
+            file_object = open(self.fullname+".png", 'r')
+            values.append("qrcode = '" + file_object.read().encode("base64") + "'")
+            file_object.close()
+            os.remove(self.fullname+".png")
 
-        request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
-        print request
+        request = "INSERT INTO " + self.getTable() + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
+        #print request
+
         try :
             if curseur.execute(request) and curseur.lastrowid:
                 setattr(self,"id",curseur.lastrowid)
@@ -168,7 +175,7 @@ class Entity(object) :
                     if(self._checkTable(jointure) == False):
                         jointure = "%s_has_%s" % (domain,self.getTable())
 
-                    curseur.execute("INSERT INTO %s SET %s = '%s', %s = '%s'" % (jointure,self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id")))
+                    curseur.execute("INSERT INTO %s SET %s = '%s', %s = '%s' ON DUPLICATE KEY UPDATE %s = '%s', %s = '%s'" % (jointure,self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id"),self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id")))
 
             connexion.commit()
             return True
@@ -209,12 +216,14 @@ class Entity(object) :
         print "ok"
 
     def _checkTable(self,tableName):
-        curseur.execute("SHOW TABLES FROM presence_management WHERE Tables_in_presence_management = '%s'"%tableName)
+        cfg = ConfigParser.ConfigParser()
+        cfg.read('conf.ini')
+        curseur.execute("SHOW TABLES FROM " + cfg.get('SQL','database') + " WHERE Tables_in_" + cfg.get('SQL','database') + " = '%s'"%tableName)
         return curseur.rowcount > 0
 
     def _constructSelect(self):
         joinClause = self._getJoinClause(self)
-        request = "SELECT DISTINCT %s.id FROM %s"% (self.__table,self.__table)
+        request = "SELECT DISTINCT %s.id FROM %s"% (self.getTable(),self.getTable())
         return request + "".join(joinClause)
 
     def _constructWhereClause(self,args = {},lastUpdate = None):
@@ -224,11 +233,11 @@ class Entity(object) :
             if self.getColumns().count(key) == 0:
                 for domain in self.getHasOne():
                     entity = getattr(__import__('models'),domain.title())()
-                    if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.__table) > 0:
+                    if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.getTable()) > 0:
                         continue
                     else:
                         subClause = args[key].split(",")
-                        where.append("%s."%(entity.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                        where.append("%s."%(entity.getTable()) + key + " IN ( '" + "' , '".join(subClause) +"' )")
                 for domain in self.getHasMany():
                     subClause = args[key].split(",")
                     entity = getattr(__import__('models'),domain.title())()
@@ -248,13 +257,11 @@ class Entity(object) :
             else:
                 subClause = args[key].split(",")
 
-            where.append("%s."%(self.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+            where.append("%s."%(self.getTable()) + key + " IN ( '" + "' , '".join(subClause) +"' )")
 
         if(lastUpdate != None):
             date = datetime.strptime(lastUpdate, "%d %b %Y %H:%M:%S GMT")
-            where.append("%s.updated > '%s'"%(self.__table,date.strftime("%Y-%m-%d %H:%M:%S")))
-
-        #print where
+            where.append("%s.updated > '%s'"%(self.getTable(),date.strftime("%Y-%m-%d %H:%M:%S")))
 
         return where
 
@@ -266,7 +273,7 @@ class Entity(object) :
         if len(where)>0:
             request += " WHERE " + " AND ".join(where)
 
-        #print request
+        print request
 
         try:
             curseur.execute(request)
@@ -285,7 +292,7 @@ class Entity(object) :
 
         result = []
         for row in rows:
-            entity = Entity(self.__table)
+            entity = Entity(self.getTable())
             entity.id = row['id']
             entity.load()
             result.append(entity)
@@ -315,6 +322,15 @@ class Entity(object) :
                     joinClause.append(" LEFT JOIN %s ON %s.id = %s.%s" % (domain,entity.getTable(), domain,entity.getTable()+"_id"))
 
         return joinClause
+
+    def _cleanArgs(self, args = {}):
+
+        for key in args.keys():
+            if args[key] == "":
+                args.pop(key, None)
+            if type(args) == 'werkzeug.datastructures.MultiDict' and len(args.getlist(key)) > 0:
+                args[key] = ",".join(args.getlist(key))
+        return args
 
 class User(Entity) :
 
@@ -367,11 +383,12 @@ class Presence(Entity) :
         self.setBelongsTo('user')
 
     def search(self, args = {},lastUpdate = None):
+        args = self._cleanArgs(args.copy())
         request = self._constructSelect()
         where = self._constructWhereClause(args,lastUpdate)
 
         if args.keys().count('promotion_id'):
-            where.append('user_has_promotion.promotion_id ="%s"'%(args['promotion_id']))
+            where.append('user_has_promotion.promotion_id  IN("%s")'%( '","'.join(args['promotion_id'].split(','))))
 
         if args.keys().count('date_begin') > 0 and args.keys().count('date_ending') > 0:
             where.append('presence.date BETWEEN "%s" AND "%s"'%(datetime.fromtimestamp(float(args['date_begin'])).strftime("%Y-%m-%d %H:%M:%S"),datetime.fromtimestamp(float(args['date_ending'])).strftime("%Y-%m-%d %H:%M:%S")))
@@ -391,11 +408,11 @@ class Presence(Entity) :
             if self.getColumns().count(key) == 0:
                 for domain in self.getHasOne():
                     entity = getattr(__import__('models'),domain.title())()
-                    if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.__table) > 0:
+                    if entity.getColumns().count(key) == 0 or entity.getHasMany().count(self.getTable()) > 0:
                         continue
                     else:
                         subClause = args[key].split(",")
-                        where.append("%s."%(entity.__table) + key + " IN ( '" + "' , '".join(subClause) +"' )")
+                        where.append("%s."%(entity.getTable()) + key + " IN ( '" + "' , '".join(subClause) +"' )")
                 for domain in self.getHasMany():
                     subClause = args[key].split(",")
                     entity = getattr(__import__('models'),domain.title())()
@@ -438,6 +455,34 @@ class Room(Entity) :
         Entity.__init__(self,'room')
         self.setHasMany('scheduling')
 
+    def authentification(token):
+        if token == '' or token == None:
+            return False
+        try:
+            curseur.execute("SELECT raspberry_id FROM room")
+
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                raise Error(400,"Error processing request")
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400, "Error processing request")
+
+        if curseur.rowcount == 0 :
+            return False
+        else:
+            responses = curseur.fetchall()
+            for response in responses:
+                if response['raspberry_id'] == None and response['raspberry_id'] == '':
+                    continue
+
+                if pwd_context.verify(token, response['raspberry_id']):
+                    return True
+
+            return False
+    authentification = staticmethod(authentification)
+
 class Promotion(Entity) :
     def __init__(self):
         Entity.__init__(self,'promotion')
@@ -452,6 +497,7 @@ class Scheduling(Entity) :
         self.setBelongsTo('promotion')
 
     def search(self, args = {},lastUpdate = None):
+        args = self._cleanArgs(args.copy())
         request = self._constructSelect()
         where = self._constructWhereClause(args,lastUpdate)
 
