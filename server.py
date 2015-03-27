@@ -30,6 +30,9 @@ def detect_auth_client():
     if request.headers['Accept'].split(',')[0] == 'text/html':
         return
 
+    if request.endpoint == 'static':
+        return
+
     if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
         return redirect(url_for('login'))
 
@@ -292,7 +295,5 @@ app.secret_key = 'C7PZnXhzuRC7Tf3L'
 if __name__ == "__main__":
     cfg = ConfigParser.ConfigParser()
     cfg.read('conf.ini')
-
     app.debug = cfg.get('Server','debug')
-
-    app.run(host = cfg.get('Server','hostIP') + ':' + cfg.get('Server','port'))
+    app.run(host = cfg.get('Server','hostIP'),port=int(cfg.get('Server','port')))

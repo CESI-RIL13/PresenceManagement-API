@@ -8,7 +8,7 @@ cfg = ConfigParser.ConfigParser()
 cfg.read('conf.ini')
 
 connexion = MySQLdb.connect(host=cfg.get('SQL','hostIP'), # your host, usually localhost
-                     port=cfg.get('SQL','port'),
+                     port=int(cfg.get('SQL','port')),
                      user=cfg.get('SQL','user'), # your username
                       passwd=cfg.get('SQL','password'), # your password
                       db=cfg.get('SQL','database')) # name of the data base
