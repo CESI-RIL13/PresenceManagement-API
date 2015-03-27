@@ -27,6 +27,22 @@
 	{"id":"1234567896","fullname":"un RARE","mail":"un.rare@viacesi.fr","role":"stagiaire"}
 ]
 
+/*
+*
+*	/users/
+*
+*	Data pour ressource User_Has_Promotion
+*
+*/
+[
+	{"id":"1234567890","promotion_id":"BO30440"},
+	{"id":"1234567891","promotion_id":"BO30440"},
+	{"id":"1234567894","promotion_id":"BO30440"},
+    {"id":"1234567894","promotion_id":"BO30441"},
+	{"id":"1234567895","promotion_id":"BO30440"},
+    {"id":"1234567895","promotion_id":"BO30441"},
+	{"id":"1234567896","promotion_id":"BO30441"}
+]
 /* 
 *
 *	/rooms/

@@ -10,8 +10,8 @@ import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
 from jsonpickle import handlers
 from passlib.apps import custom_app_context as pwd_context
 import pyqrcode
+import os
 import ConfigParser
-
 
 class DatetimeHandler(handlers.BaseHandler):
     def flatten(self, obj, data):
@@ -142,15 +142,10 @@ class Entity(object) :
             if getattr(self, column) == None or column == "updated" or self.getColumns().count(column) == 0:
                 continue
 
-            if column == "password":
-                setattr(self, column, User.hash_password(getattr(self, column)))
+            if column == "password" or column == "raspberry_id":
+                setattr(self, column, pwd_context.encrypt(getattr(self, column)))
 
             values.append(column + " = '" + MySQLdb.escape_string(str(getattr(self, column))) + "'")
-
-            if self.__table == 'user':
-                img = pyqrcode.create(self.id)
-                img.png(self.fullname, scale=8)
-                values.append("qrcode = '" + img.encode("base64") + "'")
 
         request = "INSERT INTO " + self.getTable() + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
         #print request
@@ -171,7 +166,7 @@ class Entity(object) :
                     if(self._checkTable(jointure) == False):
                         jointure = "%s_has_%s" % (domain,self.getTable())
 
-                    curseur.execute("INSERT INTO %s SET %s = '%s', %s = '%s' ON DUPLICATE KEY UPDATE SET %s = '%s', %s = '%s'" % (jointure,self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id"),self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id")))
+                    curseur.execute("INSERT INTO %s SET %s = '%s', %s = '%s' ON DUPLICATE KEY UPDATE %s = '%s', %s = '%s'" % (jointure,self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id"),self.getTable()+"_id",self.id,domain+"_id",getattr(self,domain+"_id")))
 
             connexion.commit()
             return True
@@ -372,6 +367,26 @@ class User(Entity) :
         promotion = Promotion().search(args = {'user_id':self.id})
         return promotion[0]
 
+    def save(self):
+
+        if Entity.save(self) and (self.role == 'stagiaire' or self.role == 'intervenant'):
+            img = pyqrcode.create(self.id)
+            img.png(self.fullname+".png",scale=8)
+            file_object = open(self.fullname+".png", 'r')
+            try:
+                curseur.execute("UPDATE user SET qrcode = '%s' WHERE id = '%s'" % (file_object.read().encode("base64"),self.id))
+            except MySQLdb.Error, e:
+                try:
+                    print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                    raise Error(400,"Error occuring processing the request")
+                except IndexError:
+                    print "MySQL Error: %s" % str(e)
+                    raise Error(400,"Error occuring processing the request")
+            file_object.close()
+            os.remove(self.fullname+".png")
+            return True
+
+
 class Presence(Entity) :
     def __init__(self):
         Entity.__init__(self,'presence')
@@ -450,6 +465,34 @@ class Room(Entity) :
     def __init__(self):
         Entity.__init__(self,'room')
         self.setHasMany('scheduling')
+
+    def authentification(token):
+        if token == '' or token == None:
+            return False
+        try:
+            curseur.execute("SELECT raspberry_id FROM room")
+
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                raise Error(400,"Error processing request")
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400, "Error processing request")
+
+        if curseur.rowcount == 0 :
+            return False
+        else:
+            responses = curseur.fetchall()
+            for response in responses:
+                if response['raspberry_id'] == None and response['raspberry_id'] == '':
+                    continue
+
+                if pwd_context.verify(token, response['raspberry_id']):
+                    return True
+
+            return False
+    authentification = staticmethod(authentification)
 
 class Promotion(Entity) :
     def __init__(self):
