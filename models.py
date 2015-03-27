@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 __author__ = 'Dos Santos Julien'
 from config import connexion, curseur
 from datetime import datetime

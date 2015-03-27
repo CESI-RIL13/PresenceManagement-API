@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 __author__ = 'Dos Santos Julien'
 from flask import *
-from config import connexion, curseur
 from models import *
 import jsonpickle
 import ConfigParser
@@ -295,5 +295,7 @@ app.secret_key = 'C7PZnXhzuRC7Tf3L'
 if __name__ == "__main__":
     cfg = ConfigParser.ConfigParser()
     cfg.read('conf.ini')
+
     app.debug = cfg.get('Server','debug')
-    app.run(host = cfg.get('Server','hostIP'),port=int(cfg.get('Server','port')))
+
+    app.run(host = cfg.get('Server','hostIP'), port=int(cfg.get('Server','port')))
