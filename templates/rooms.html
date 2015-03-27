@@ -23,22 +23,22 @@
 	<nav>
 		<ul class="menu">
 			<li class="menu__element">
-				<a class="menu__element__link" href="/presences">Presences</a>
+				<a class="menu__element__link" href="{{ url_for('presences') }}">Presences</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="/participants">Participants</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
+			</li>
+            <li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="/promotions">Promotions</a>
+				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Plannings</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="/plannings">Plannings</a>
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('rooms') }}">Rooms</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link menu__element__link--active" href="/rooms">Rooms</a>
-			</li>
-			<li class="menu__element">
-				<a class="menu__element__link" href="/utilisateurs">Utilisateurs</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
 			</li>
 		</ul>
 	</nav>
