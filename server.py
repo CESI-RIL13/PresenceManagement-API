@@ -76,7 +76,13 @@ def users(identifiant=None):
             except Error, e:
                 return e.value, e.code
             else:
-                return user.asJson(),200
+                if request.headers['Accept'].split(',')[0] == 'text/html':
+                    if user.role == 'stagiaire' or user.role == 'intervenant':
+                        return render_template('participant.html', user = user)
+                    else:
+                        return render_template('utilisateur.html', user = user)
+                else:
+                    return user.asJson(),200
 
         elif request.method == 'PUT':
             user.fromJson(request.data)
@@ -90,10 +96,15 @@ def users(identifiant=None):
     else :
 
         if request.method == 'GET':
-            try:
-                return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
-            except Error, e:
-                return e.value,e.code
+            if request.headers['Accept'].split(',')[0] == 'text/html':
+                users = User().search(request.args,request.headers.get('If-Modified-Since'))
+
+                return render_template('utilisateurs.html', users = users)
+            else:
+                try:
+                    return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+                except Error, e:
+                    return e.value,e.code
 
         elif request.method == 'POST' or request.method == 'PUT':
             entities = jsonpickle.decode(request.data)
@@ -289,4 +300,9 @@ app.secret_key = 'C7PZnXhzuRC7Tf3L'
 
 if __name__ == "__main__":
     app.debug = True
+<<<<<<< HEAD
+    app.run(host = "10.133.128.91")
+
+=======
     app.run(host = "")
+>>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8

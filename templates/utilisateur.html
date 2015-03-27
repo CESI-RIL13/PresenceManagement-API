@@ -23,10 +23,10 @@
 	<nav>
 		<ul class="menu">
 			<li class="menu__element">
-				<a class="menu__element__link" href="{{ url_for('presences') }}">Presences</a>
+				<a class="menu__element__link" href="{{ url_for('presences.html') }}">Presences</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link menu__element__link--active" href="{{ url_for('users') }}">Participants</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
@@ -38,7 +38,7 @@
 				<a class="menu__element__link" href="{{ url_for('rooms') }}">Rooms</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('users') }}">Utilisateurs</a>
 			</li>
 		</ul>
 	</nav>
@@ -46,8 +46,11 @@
 <div class="bloc bloc--content bloc--content--participants">
 	<form class="form" action="#"  method="POST">
 		<h2 class="form__title">{{ user.fullname }}</h2>
-		<p class="form__element form__infos">{{ user.getPromotion().name }}</p>
-		<p class="form__element form__infos"><a href="mailto:{{ user.mail }}">{{ user.mail }}</a></p>
+		<label class="form__element">{{ user.getPromotion().name }}</label>
+		<input class="form__element" type="text">
+		<label><input type="radio" name="group1" value="assistant"> Assistant</label>
+		<label><input type="radio" name="group1" value="ingenieur" checked> Ingénieur de formation</label>
+		<label><input type="radio" name="group1" value="superadmin"> Super Admin</label>
 		<button class="form__element form__element--submit" type="submit">Générer QRCode</button>
 	</form>
 </div>
