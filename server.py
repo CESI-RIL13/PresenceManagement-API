@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = 'Dos Santos Julien'
+from __future__ import unicode_literals
 from flask import *
-from config import connexion, curseur
 from models import *
 import jsonpickle
 import ConfigParser
@@ -284,4 +284,4 @@ if __name__ == "__main__":
 
     app.debug = cfg.get('Server','debug')
 
-    app.run(host = cfg.get('Server','hostIP') + ':' + cfg.get('Server','port'))
+    app.run(host = cfg.get('Server','hostIP'), port=int(cfg.get('Server','port')))

@@ -1,13 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 __author__ = 'Dos Santos Julien'
+from __future__ import unicode_literals
 from config import connexion, curseur
 from datetime import datetime
-from werkzeug import datastructures
 import calendar
 import jsonpickle
 import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
-import importlib
 from jsonpickle import handlers
 from passlib.apps import custom_app_context as pwd_context
 import pyqrcode
