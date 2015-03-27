@@ -5,6 +5,7 @@ from flask import *
 from config import connexion, curseur
 from models import *
 import jsonpickle
+import ConfigParser
 
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -260,16 +261,6 @@ def rooms(identifiant=None):
                 else:
                     return room.asJson(), 200
 
-
-        elif request.method == 'PUT':
-            room.fromJson(request.data)
-            try:
-                room.save()
-            except Error,e:
-                return e.value,e.code
-            else:
-                return promotion.asJson(),201
-
     else :
         if request.method == 'GET':
             if request.headers['Accept'].split(',')[0] == 'text/html':
@@ -299,5 +290,9 @@ def rooms(identifiant=None):
 app.secret_key = 'C7PZnXhzuRC7Tf3L'
 
 if __name__ == "__main__":
-    app.debug = True
-    app.run(host = "")
+    cfg = ConfigParser.ConfigParser()
+    cfg.read('conf.ini')
+
+    app.debug = cfg.get('Server','debug')
+
+    app.run(host = cfg.get('Server','hostIP') + ':' + cfg.get('Server','port'))
