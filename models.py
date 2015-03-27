@@ -444,6 +444,28 @@ class Room(Entity) :
         Entity.__init__(self,'room')
         self.setHasMany('scheduling')
 
+    def authentification(token):
+        if token == '' or token == None:
+            return False
+        try:
+            curseur.execute("SELECT id FROM room WHERE raspberry_id = '%s'" % (token))
+
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                raise Error(400,"Error processing request")
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400, "Error processing request")
+
+        if curseur.rowcount == 1 :
+            return True
+        else:
+           return False
+    authentification = staticmethod(authentification)
+
+
+
 class Promotion(Entity) :
     def __init__(self):
         Entity.__init__(self,'promotion')

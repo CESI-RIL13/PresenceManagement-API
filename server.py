@@ -12,6 +12,9 @@ app.config['JSON_AS_ASCII'] = False
 @app.before_request
 def detect_user_login():
 
+    if not request.headers['Accept'].split(',')[0] == 'text/html':
+        return
+
     if request.endpoint == 'static':
         return
 
@@ -20,6 +23,14 @@ def detect_user_login():
 
     if 'user_id' in session and request.endpoint == 'login':
         return redirect(url_for('hello'))
+
+@app.before_request
+def detect_auth_client():
+    if request.headers['Accept'].split(',')[0] == 'text/html':
+        return
+
+    if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
+        return redirect(url_for('login'))
 
 @app.route("/")
 def hello():
