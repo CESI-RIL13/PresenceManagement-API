@@ -262,7 +262,7 @@ class Entity(object) :
         if len(where)>0:
             request += " WHERE " + " AND ".join(where)
 
-        #print request
+        print request
 
         try:
             curseur.execute(request)
