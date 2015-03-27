@@ -22,7 +22,7 @@
 	{"id":"1234567891","fullname":"Cedric MOIZEAU","mail":"cedric.moizeau@viacesi.fr","role":"stagiaire"},
 	{"id":"1234567892","fullname":"Eric Artigala","mail":"eric.artigala@viacesi.fr","role":"intervenant"},
 	{"id":"1234567893","fullname":"Benjamin TOUCHARD","mail":"benjamin.touchard@viacesi.fr","role":"intervenant"},
-	{"id":"1234567894","fullname":"Stephane AMET","mail":"samet@cesi.fr","role":"Ingénieur formation","password":"1234"},
+	{"id":"1234567894","fullname":"Stephane AMET","mail":"samet@cesi.fr","role":"Ingenieur formation","password":"1234"},
 	{"id":"1234567895","fullname":"Jessica BOUVIER","mail":"jbouvier@cesi.fr","role":"Assistant","password":"test"},
 	{"id":"1234567896","fullname":"un RARE","mail":"un.rare@viacesi.fr","role":"stagiaire"}
 ]
@@ -53,4 +53,17 @@
 	{"date_start":"1426163400","date_end":"1426177800","promotion_id":"BO30440","room_id":"8","user_id":"1234567892","course":"informatique mobile"},
 	{"date_start":"1426145400","date_end":"1426159800","promotion_id":"BO30441","room_id":"7","user_id":"","course":"PFR"},
 	{"date_start":"1426163400","date_end":"1426177800","promotion_id":"BO30441","room_id":"7","user_id":"","course":"PFR"}
+]
+
+/*
+*
+*	/presences/
+*
+*	Data pour ressource presences
+*
+*/
+
+[
+  {"date":"1426145400","user_id":"1234567890","updated":"1426145400"},
+  {"date":"1426145400","user_id":"1234567890","updated":"1426145400"}
 ]

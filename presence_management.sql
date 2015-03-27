@@ -15,7 +15,7 @@ CREATE  TABLE IF NOT EXISTS `presence_management`.`user` (
   `id` VARCHAR(255) NOT NULL ,
   `fullname` VARCHAR(255) NULL ,
   `mail` VARCHAR(255) NOT NULL ,
-  `password` VARCHAR(45) NULL ,
+  `password` VARCHAR(255) NULL ,
   `role` ENUM('SA','Ingénieur formation','assistant','intervenant','stagiaire') NOT NULL ,
   `archived` TINYINT(1) NULL DEFAULT 0 ,
   `updated` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP ,

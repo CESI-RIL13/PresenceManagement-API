@@ -44,19 +44,13 @@
 	</nav>
 </header>
 <div class="bloc bloc--content bloc--content--rooms">
-	<table class="list list--rooms" width="100%">
-		<tr>
-			<th>Room</th>
-			<th>Adresse mac</th>
-		</tr>
-        {% for room in rooms %}
-        <tr>
-            <td>{{ room.name }}</td>
-            <td>{{ room.raspberry_id }}</td>
-        </tr>
-        {% endfor %}
-	</table>
+    <form class="form form--room" method="POST">
+		<h2 class="form__title">{{ room.name }}</h2>
+		<label class="form__element form--promotion__element" for="mac-adress">Adresse MAC</label>
+		<input class="form__element form--promotion__element" type="text" id="mac-adress" name="rapsberry_id" value="{{ room.raspberry_id }}">
+		<button class="form__element form__element--submit" type="submit" id="room-submit">Enregistrer</button>
+	</form>
 </div>
-<script src="js/script.js"></script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
 </body>
 </html>

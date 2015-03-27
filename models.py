@@ -147,7 +147,7 @@ class Entity(object) :
                 setattr(self, column, User.hash_password(getattr(self, column)))
                 print getattr(self, column)
 
-            values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
+            values.append(column + " = '" + MySQLdb.escape_string(str(getattr(self, column))) + "'")
 
 
         request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
