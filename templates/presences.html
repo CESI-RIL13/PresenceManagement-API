@@ -41,29 +41,26 @@
 	</nav>
 </header>
 <div class="bloc bloc--content bloc--content--presences">
-	<form class="form form--filter" action="#"  method="GET">
+	<form class="form form--filter" action="{{ url_for('presences') }}"  method="GET">
 		<h2 class="form__title">Filtres</h2>
-		<input class="form__element form__element--name" type="text" placeholder="Nom">
-		<select class="form__element form__element--promotions" multiple data-placeholder="Choisissez une promotion...">
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
+		<input class="form__element form__element--name" type="text" placeholder="Nom" name="fullname" value="{{ request.args['fullname']}}">
+		<select class="form__element form__element--promotions" multiple data-placeholder="Choisissez une promotion..." name="promotion_id">
+            {% for promotion in promotions %}
+                <option value="{{ promotion.id }}" {{'%s' % 'selected=true' if promotion.id in request.args.getlist('promotion_id')}}>{{ promotion.name }}</option>
+            {% endfor %}
 		</select>
-		<label><input type="checkbox" class="form__element--date">Date</label>
-		<label><input type="checkbox" class="form__element--periode">Période</label>
+		<label><input type="checkbox" class="form__element--date" name="checkbox" value="date" {{'%s' % 'checked=true' if request.args['checkbox'] == 'date'}}>Date</label>
+		<label><input type="checkbox" class="form__element--periode" name="checkbox" value="periode" {{'%s' % 'checked=true' if request.args['checkbox'] == 'periode'}}>Période</label>
 		<br>
-		<input class="form__element form__element--date--precise" type="text" placeholder="Date">
-		<input class="form__element form__element--date--debut" type="text" placeholder="Période début...">
-		<input class="form__element form__element--date--fin" type="text" placeholder="Période fin">
+		<input type="hidden" name="date" value="{{ request.args['date']}}">
+		<input class="form__element form__element--date--precise" type="text" placeholder="Date" name="date_precise" value="{{ request.args['date_precise']}}"
+                style="{{'%s' % 'display: inline-block;' if request.args['checkbox'] == 'date'}}">
+		<input type="hidden" name="date_begin" value="{{ request.args['date_begin']}}">
+		<input class="form__element form__element--date--debut" type="text" placeholder="Période début..." name="date_debut" value="{{ request.args['date_debut']}}"
+                style="{{'%s' % 'display: inline-block;' if request.args['checkbox'] == 'periode'}}">
+		<input type="hidden" name="date_ending" value="{{ request.args['date_ending']}}">
+		<input class="form__element form__element--date--fin" type="text" placeholder="Période fin" name="date_fin" value="{{ request.args['date_fin']}}"
+                style="{{'%s' % 'display: inline-block;' if request.args['checkbox'] == 'periode'}}">
 		<button class="form__element form__element--submit" type="submit">Filtrer</button>
 	</form>
     <table class="list list--presences" width="100%">
@@ -73,14 +70,20 @@
             <th>Nom</th>
             <th>Heure d'arrivée</th>
         </tr>
-        {% for presence in presences %}
-        <tr>
-            <td>{{ presence.date.strftime('%d/%m/%Y') }}</td>
-            <td>{{ presence.getEntity('user').getPromotion().name }}</td>
-            <td>{{ presence.getEntity('user').fullname }}</td>
-            <td>{{ presence.date.strftime('%H:%M') }}</td>
-        </tr>
-        {% endfor %}
+        {% if presences %}
+            {% for presence in presences %}
+                <tr>
+                    <td>{{ presence.date.strftime('%d/%m/%Y') }}</td>
+                    <td><a href="{{ url_for('promotions', id=presence.getEntity('user').getPromotion().id,)}}">{{ presence.getEntity('user').getPromotion().name }}</a></td>
+                    <td><a href="{{ url_for('users', id=presence.getEntity('user').id,)}}">{{ presence.getEntity('user').fullname }}</a></td>
+                    <td>{{ presence.date.strftime('%H:%M') }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">Aucun utilisateur trouver</td>
+            </tr>
+        {% endif %}
     </table>
 </div>
 <script src="{{ url_for('static', filename='js/script.js') }}"></script>
