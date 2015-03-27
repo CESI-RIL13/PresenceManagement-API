@@ -300,9 +300,4 @@ app.secret_key = 'C7PZnXhzuRC7Tf3L'
 
 if __name__ == "__main__":
     app.debug = True
-<<<<<<< HEAD
-    app.run(host = "10.133.128.91")
-
-=======
     app.run(host = "")
->>>>>>> 20b8c6179fac3357b9eb6f259859ac762041aac8
