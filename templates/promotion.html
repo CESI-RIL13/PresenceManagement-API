@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 	<meta charset="utf-8">
-	<title>Promotions</title>
+	<title>Participant</title>
 	<meta name="description" content="">
 	<meta name="author" content="øvnislash">
 
@@ -12,7 +12,7 @@
 	<script src="lib/chosen_v1.4.1/chosen.jquery.min.js"></script>
 	<link rel="stylesheet" type="text/css" href="lib/datetimepicker-master/jquery.datetimepicker.css"/ >
 	<script src="lib/datetimepicker-master/jquery.datetimepicker.js"></script>
-
+	
 	<!-- mes scripts -->
 	<link rel="shortcut icon" href="favicon.ico">
 	<link rel="stylesheet" href="css/style.css" media="screen">
@@ -29,13 +29,13 @@
 				<a class="menu__element__link" href="participants.html">Participants</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="promotions.html">Promotions</a>
+				<a class="menu__element__link menu__element__link--active" href="promotions.html">Promotions</a>
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="plannings.html">Plannings</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link menu__element__link--active" href="rooms.html">Rooms</a>
+				<a class="menu__element__link" href="rooms.html">Rooms</a>
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="utilisateurs.html">Utilisateurs</a>
@@ -43,42 +43,13 @@
 		</ul>
 	</nav>
 </header>
-<div class="bloc bloc--content bloc--content--rooms">
-	<table class="list list--rooms" width="100%">
-		<tr>
-			<th>Room</th>
-			<th>Adresse mac</th>
-		</tr>
-		<tr>
-			<td>Cap Ferret</td>
-			<td>00:15:2b:3a:42</td>
-		</tr>
-		<tr>
-			<td>Cap Ferret</td>
-			<td>00:15:2b:3a:42</td>
-		</tr>
-		<tr>
-			<td>Cap Ferret</td>
-			<td>00:15:2b:3a:42</td>
-		</tr>
-		<tr>
-			<td>Cap Ferret</td>
-			<td>00:15:2b:3a:42</td>
-		</tr>
-		<tr>
-			<td>Cap Ferret</td>
-			<td>00:15:2b:3a:42</td>
-		</tr>
-		<tr>
-			<td>Cap Ferret</td>
-			<td>00:15:2b:3a:42</td>
-		</tr>
-		<tr>
-			<td>Cap Ferret</td>
-			<td>00:15:2b:3a:42</td>
-		</tr>
-	</table>
+<div class="bloc bloc--content bloc--content--promotions">
+	<form class="form form--promotion" action="#"  method="POST">
+		<h2 class="form__title">RIL 13</h2>
+		<label class="form__element form--promotion__element">Durée de retard</label>
+		<input class="form__element form--promotion__element" type="text">
+		<button class="form__element form__element--submit" type="submit">Enregistrer</button>
+	</form>
 </div>
-<script src="js/script.js"></script>
 </body>
 </html>

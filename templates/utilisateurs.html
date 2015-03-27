@@ -2,119 +2,67 @@
 <html lang="fr">
 <head>
 	<meta charset="utf-8">
-	<title>Présences</title>
+	<title>Participants</title>
 	<meta name="description" content="">
 	<meta name="author" content="øvnislash">
 
 	<!-- libs -->
 	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-	<link rel="stylesheet" href="lib/chosen_v1.4.1/chosen.min.css" media="screen">
-	<script src="lib/chosen_v1.4.1/chosen.jquery.min.js"></script>
-	<link rel="stylesheet" type="text/css" href="lib/datetimepicker-master/jquery.datetimepicker.css"/ >
-	<script src="lib/datetimepicker-master/jquery.datetimepicker.js"></script>
+	<link rel="stylesheet" href="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.min.css') }}" media="screen">
+	<script src="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.jquery.min.js') }}"></script>
+	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.css') }}"/>
+	<script src="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.js') }}"></script>
 	
 	<!-- mes scripts -->
 	<link rel="shortcut icon" href="favicon.ico">
-	<link rel="stylesheet" href="css/style.css" media="screen">
+	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen">
 </head>
 <body>
 <header class="bloc bloc--header">
-	<img src="img/logo-cesialternance.png" width="250" height="85">
+	<img src="{{ url_for('static', filename='img/logo-cesialternance.png') }}" width="250" height="85">
 	<nav>
 		<ul class="menu">
 			<li class="menu__element">
-				<a class="menu__element__link" href="presences.html">Presences</a>
+				<a class="menu__element__link" href="{{ url_for('presences') }}">Presences</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="participants.html">Participants</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="plannings.html">Plannings</a>
+				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="rooms.html">Rooms</a>
+				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Plannings</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link menu__element__link--active" href="utilisateurs.html">Utilisateurs</a>
+				<a class="menu__element__link" href="{{ url_for('rooms') }}">Rooms</a>
+			</li>
+			<li class="menu__element">
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('users') }}">Utilisateurs</a>
 			</li>
 		</ul>
 	</nav>
 </header>
-<div class="bloc bloc--content bloc--content--presences">
-	<form class="filter">
-		<h2 class="filter__title">Filtres</h2>
-		<input class="filter__element filter__element--name" type="text" placeholder="Nom">
-		<select class="filter__element filter__element--promotions" multiple data-placeholder="Choisissez une promotion...">
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
-			<option>RIL 13</option>
-			<option>RAR 13</option>
-			<option>DIM 11</option>
-		</select>
-		<label><input type="checkbox" class="filter__element--date">Date</label>
-		<label><input type="checkbox" class="filter__element--periode">Période</label>
-		<br>
-		<input class="filter__element filter__element--date--precise" type="text" placeholder="Date">
-		<input class="filter__element filter__element--date--debut" type="text" placeholder="Période début...">
-		<input class="filter__element filter__element--date--fin" type="text" placeholder="Période fin">
-		<button class="filter__element filter__element--submit" type="submit">Filtrer</button>
+<div class="bloc bloc--content bloc--content--participants">
+	<form class="form" action="#"  method="POST">
+		<h2 class="form__title">Filtres</h2>
+		<input class="form__element form__element--name" type="text" placeholder="Nom">
+		<button class="form__element form__element--submit" type="submit">Filtrer</button>
 	</form>
-	<ul class="list list--presences">
-		<li class="list__element">
-			<table width="100%">
-				<tr>
-					<th>Date</th>
-					<th>Promotion</th>
-					<th>Nom</th>
-					<th>Heure d'arrivée</th>
-				</tr>
-				<tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr>
-				<tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr><tr>
-					<td>Jeu. 12/03/15</td>
-					<td>RIL13</td>
-					<td>Jean VALJEAN</td>
-					<td>11:49</td>
-				</tr>
-			</table>
-		</li>
-	</ul>
+	<table class="list list--participants" width="100%">
+		<tr>
+			<th>Nom</th>
+			<th>Email</th>
+			<th>Role</th>
+		</tr>
+        {% for user in users %}
+		<tr>
+			<td>{{ user.fullname }}</td>
+            <td>{{ user.mail }}</td>
+			<td>{{ user.role }}</td>
+		</tr>
+        {% endfor %}
+	</table>
 </div>
 <script src="js/script.js"></script>
 </body>

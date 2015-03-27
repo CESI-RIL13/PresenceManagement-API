@@ -9,6 +9,7 @@ import MySQLdb #http://www.mikusa.com/python-mysql-docs/index.html
 import importlib
 from jsonpickle import handlers
 from passlib.apps import custom_app_context as pwd_context
+import pyqrcode
 
 
 class DatetimeHandler(handlers.BaseHandler):
@@ -149,6 +150,10 @@ class Entity(object) :
 
             values.append(column + " = '" + MySQLdb.escape_string(getattr(self, column)) + "'")
 
+            if self.__table == 'user':
+                img = pyqrcode.create(self.id)
+                img.png(self.fullname, scale=8)
+                values.append("qrcode = '" + img.encode("base64") + "'")
 
         request = "INSERT INTO " + self.__table + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
         print request
@@ -209,7 +214,7 @@ class Entity(object) :
         print "ok"
 
     def _checkTable(self,tableName):
-        curseur.execute("SHOW TABLES FROM presence_management WHERE Tables_in_presence_management = '%s'"%tableName)
+        curseur.execute("SHOW TABLES FROM cesi_presence WHERE Tables_in_cesi_presence = '%s'"%tableName)
         return curseur.rowcount > 0
 
     def _constructSelect(self):
