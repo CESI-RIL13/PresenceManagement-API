@@ -52,7 +52,10 @@ def hello():
     user.id = session['user_id']
     user.load()
 
-    return 'Hello %s' % user.fullname
+    if request.headers['Accept'].split(',')[0] == 'text/html':
+        return redirect(url_for('presences'))
+    else:
+        return 'Circulez y a rien à voir !'
 
 @app.route('/login/', methods = ['GET', 'POST'])
 def login():
@@ -119,13 +122,14 @@ def users(identifiant=None):
                     return e.value,e.code
 
         elif request.method == 'POST' or request.method == 'PUT':
+
             if request.headers['Accept'].split(',')[0] == 'text/html':
                 file = request.files['file']
                 if file and allowed_file(file.filename):
                     filename = secure_filename(file.filename)
                     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    return redirect(url_for('uploaded_file',
-                                            filename=filename))
+                    return redirect(url_for('uploaded_file',filename=filename))
+
             else:
                 entities = jsonpickle.decode(request.data)
                 users = []

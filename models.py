@@ -137,7 +137,7 @@ class Entity(object) :
 
     def save(self):
         values = []
-
+        args = []
         for column in self.getColumns():
             if getattr(self, column) == None or column == "updated" or self.getColumns().count(column) == 0:
                 continue
@@ -145,13 +145,14 @@ class Entity(object) :
             if column == "password" or column == "raspberry_id":
                 setattr(self, column, pwd_context.encrypt(getattr(self, column)))
 
-            values.append(column + " = '" + MySQLdb.escape_string(str(getattr(self, column))) + "'")
+            values.append(column + " = %s")
+            args.append(getattr(self, column))
 
-        request = "INSERT INTO " + self.getTable() + " SET " + ",".join(values) + " ON DUPLICATE KEY UPDATE " + ",".join(values)
+        request = "INSERT INTO %s SET %s ON DUPLICATE KEY UPDATE %s" % (self.getTable(),",".join(values),",".join(values))
         #print request
 
         try :
-            if curseur.execute(request) and curseur.lastrowid:
+            if curseur.execute(request.encode('utf-8'),args + args) and curseur.lastrowid:
                 setattr(self,"id",curseur.lastrowid)
 
             for domain in self.getHasMany():
@@ -408,13 +409,16 @@ class User(Entity) :
             os.remove(self.fullname+".png")
             return True
 
-        if self.promotion_id and self.load() and self.role == 'stagiaire':
+        if hasattr(self,'promotion_id') and self.load() and self.role == 'stagiaire':
             promotions = self.getPromotion()
             for promotion in promotions:
+                print promotion.id
                 try:
                     if promotion.id == self.promotion_id:
+                        print promotion.id
                         curseur.execute("UPDATE user_has_promotion SET current = 1 WHERE user_id = '%s' AND promotion_id = '%s'" % (self.id,promotion.id))
                     else:
+                        print promotion.id
                         curseur.execute("UPDATE user_has_promotion SET current = 0 WHERE user_id = '%s' AND promotion_id = '%s'" % (self.id,promotion.id))
                 except MySQLdb.Error, e:
                     try:
@@ -423,6 +427,8 @@ class User(Entity) :
                     except IndexError:
                         print "MySQL Error: %s" % str(e)
                         raise Error(400,"Error occuring processing the request")
+        connexion.commit()
+        return True
 
 
 class Presence(Entity) :
