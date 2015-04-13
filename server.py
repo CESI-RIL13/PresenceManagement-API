@@ -9,7 +9,7 @@ import ConfigParser
 import os
 from Importation import *
 from werkzeug.utils import secure_filename
-UPLOAD_FOLDER = '/tmp/'
+UPLOAD_FOLDER = os.path.dirname(os.path.abspath(__file__)) + '/tmp/'
 ALLOWED_EXTENSIONS = set(['csv'])
 app = Flask(__name__)
 app.config['JSON_AS_ASCII'] = False
@@ -38,8 +38,8 @@ def detect_auth_client():
     if request.endpoint == 'static':
         return
 
-    if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
-        return redirect(url_for('login'))
+    #if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
+     #   return redirect(url_for('login'))
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -308,6 +308,94 @@ def rooms(identifiant=None):
 
                 rooms.append(room.id)
             return jsonpickle.encode(rooms,unpicklable=False),201
+
+@app.route('/imports/<type>', methods = ['POST', 'PUT'])
+def imports(type=None):
+
+    if request.method == 'POST' or request.method == 'PUT':
+
+        file = request.files['file']
+
+        if file and allowed_file(file.filename):
+
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            importation = Importation(app.config['UPLOAD_FOLDER'] + filename)
+
+            try :
+                if(type=="users"):
+
+                    importation.importerCsv()
+                    promos = jsonpickle.decode(importation.importPromo())
+
+                    if len(promos) > 0:
+                        for entity in promos:
+                            promo = Promotion()
+                            promo.fromJson(entity)
+                            try:
+                                promo.save()
+                            except Error, e:
+                                return e.value,e.code
+                    try:
+                        entities = jsonpickle.decode(importation.importUsers())
+                    except Error,e:
+                        print e
+                        return e.value,400
+
+                    users = []
+                    for entity in entities:
+                        user = User()
+                        user.fromJson(entity)
+                        try:
+                            user.save()
+                        except Error, e:
+                            return e.value,e.code
+
+                        users.append(user.id)
+
+                    return jsonpickle.encode(users,unpicklable=False),201
+#                    return 'test',200
+
+                elif(type=="schedulings"):
+                    importation.importerCsv()
+
+                    rooms = jsonpickle.decode(importation.importRooms())
+
+                    if len(rooms) > 0:
+                        for entity in rooms:
+                            room = Room()
+                            room.fromJson(entity)
+                            try:
+                                room.save()
+                            except Error, e:
+                                return e.value,e.code
+                    try:
+                        entities = jsonpickle.decode(importation.importSchedulings())
+                    except Error, e:
+                        print e
+                        return e.value,400
+
+                    schedulings = []
+                    for entity in entities:
+                        scheduling = Scheduling()
+                        scheduling.fromJson(entity)
+                        try:
+                            scheduling.save()
+                        except Error, e:
+                            return e.value,e.code
+
+                        schedulings.append(scheduling.id)
+                    return jsonpickle.encode(schedulings,unpicklable=False),201
+                    #return 'test',200
+
+            except Error, e:
+                return e.value, e.code
+
+        else:
+            return "not file provided or invalid file type",400
+
+    else:
+        return 405
 
 # set the secret key.  keep this really secret:
 app.secret_key = 'C7PZnXhzuRC7Tf3L'

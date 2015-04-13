@@ -430,7 +430,6 @@ class User(Entity) :
         connexion.commit()
         return True
 
-
 class Presence(Entity) :
     def __init__(self):
         Entity.__init__(self,'presence')

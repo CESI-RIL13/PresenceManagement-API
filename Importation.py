@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: latin-1 -*-
+# -*- coding: utf-8 -*-
 __author__ = 'cedric'
 import copy
 import csv
@@ -51,7 +51,7 @@ class Importation:
                 if len(row) > 1:
                     index=0
                     for nomChamps in row:
-                        nomChamps = Importation.remove_accents(nomChamps.decode("utf-8"))
+                        nomChamps = nomChamps
                         if Importation.getNomConfig(self.configuration,nomChamps) <> None:
                             map[Importation.getNomConfig(self.configuration,nomChamps)]=index
                         index+=1
@@ -74,7 +74,7 @@ class Importation:
             else:
                 for clef,valeur in pos.items():
                     if valeur <> -1:
-                        champsImportes[clef]="%s"%(Importation.remove_accents(row[valeur].decode("utf-8")))
+                        champsImportes[clef]="%s"%(row[valeur])
                 if promo <> 0:
                     champsImportes["scheduling.promotion_id"]=promo
                 # print champsImportes
@@ -117,12 +117,15 @@ class Importation:
             scheduling["date_end"]= str(mktime(datetime.strptime(from_dateEnd,"%d/%m/%y %H:%M").timetuple()))
 
             if not planning["scheduling.room_name"] in rooms:
-                rooms[planning["scheduling.room_name"]]= room.search({"name" : planning["scheduling.room_name"]})[0]["id"]
+                entity = room.search({"name" : planning["scheduling.room_name"]})
+                rooms[planning["scheduling.room_name"]]= entity[0].id
             scheduling["room_id"]=str(rooms[planning["scheduling.room_name"]])
 
-            if not planning["scheduling.user_name"] in users:
-                users[planning["scheduling.user_name"]]= user.search({"fullname" : planning["scheduling.user_name"]})[0]["id"]
-            scheduling["user_id"]=users[planning["scheduling.user_name"]]
+            if 'scheduling.user_name' in planning.keys():
+                if not planning["scheduling.user_name"] in users:
+                    entity = user.search({"fullname" : planning["scheduling.user_name"]})
+                    users[planning["scheduling.user_name"]]= entity[0].id
+                scheduling["user_id"]=users[planning["scheduling.user_name"]]
 
             scheduling["promotion_id"]=planning["scheduling.promotion_id"]
 
