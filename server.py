@@ -112,9 +112,12 @@ def users(identifiant=None):
 
         if request.method == 'GET':
             if request.headers['Accept'].split(',')[0] == 'text/html':
-                users = User().search(request.args,request.headers.get('If-Modified-Since'))
+                try:
+                    users = User().search(request.args,request.headers.get('If-Modified-Since'))
+                    return render_template('utilisateurs.html', users = users)
+                except Error, e:
+                   return render_template('utilisateurs.html')
 
-                return render_template('utilisateurs.html', users = users)
             else:
                 try:
                     return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
@@ -266,23 +269,27 @@ def rooms(identifiant=None):
                 room.load()
                 if request.headers['Accept'].split(',')[0] == 'text/html':
                      return render_template('room.html', room = room, save = True)
+                else:
+                    return room.asJson(), 200
             except Error, e:
                 return e.value,e.code
-            else:
-                return room.asJson(), 200
+
 
         elif request.method == 'POST':
-            if request.form :
+            room.load()
+            if request.form['rapsberry_id'] :
                 try:
-                    room.load()
                     room.raspberry_id = request.form['rapsberry_id']
                     room.save()
                     if request.headers['Accept'].split(',')[0] == 'text/html':
-                         return render_template('room.html', room = room)
+                         return render_template('room.html', room = room, success = True)
+                    else:
+                        return room.asJson(), 200
                 except Error, e:
                     return e.value,e.code
-                else:
-                    return room.asJson(), 200
+
+            else :
+                return render_template('room.html', room = room, error = True)
 
     else :
         if request.method == 'GET':
