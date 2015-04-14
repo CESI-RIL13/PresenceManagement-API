@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 	<meta charset="utf-8">
-	<title>Participants</title>
+	<title>Présences</title>
 	<meta name="description" content="">
 	<meta name="author" content="øvnislash">
 
@@ -12,9 +12,9 @@
 	<script src="{{ url_for('static', filename='lib/chosen_v1.4.1/chosen.jquery.min.js') }}"></script>
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.css') }}"/>
 	<script src="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.js') }}"></script>
-	
+
 	<!-- mes scripts -->
-	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen">
 </head>
 <body>
@@ -26,42 +26,50 @@
 				<a class="menu__element__link" href="{{ url_for('presences') }}">Presences</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('users') }}">Utilisateurs</a>
 			</li>
-			<li class="menu__element">
+            <!--
+            <li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Plannings</a>
 			</li>
+			-->
 			<li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('rooms') }}">Rooms</a>
 			</li>
-			<li class="menu__element">
-				<a class="menu__element__link menu__element__link--active" href="{{ url_for('users') }}">Utilisateurs</a>
+            <li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Importation</a>
 			</li>
 		</ul>
 	</nav>
 </header>
 <div class="bloc bloc--content bloc--content--participants">
-	<form class="form" action="#"  method="GET">
+	<form class="form"  method="GET">
 		<h2 class="form__title">Filtres</h2>
-		<input class="form__element form__element--name" type="text" name="fullname" placeholder="Nom">
+		<input class="form__element form__element--name" type="text" placeholder="Nom" name="fullname" value="{{ request.args['fullname']}}">
 		<button class="form__element form__element--submit" type="submit">Filtrer</button>
 	</form>
 	<table class="list list--participants" width="100%">
-		<tr>
-			<th>Nom</th>
-			<th>Email</th>
-			<th>Role</th>
-		</tr>
-        {% for user in users %}
-		<tr>
-			<td>{{ user.fullname }}</td>
-            <td>{{ user.mail }}</td>
-			<td>{{ user.role }}</td>
-		</tr>
-        {% endfor %}
+        {% if not users %}
+            <tr>
+                <td>Aucun utilisateur trouvé</td>
+            </tr>
+        {% else %}
+            <tr>
+                <th>Nom</th>
+                <th>Email</th>
+                <th>Role</th>
+            </tr>
+            {% for user in users %}
+            <tr>
+                <td>{{ user.fullname }}</td>
+                <td>{{ user.mail }}</td>
+                <td>{{ user.role }}</td>
+            </tr>
+            {% endfor %}
+        {% endif %}
 	</table>
 </div>
 <script src="js/script.js"></script>

@@ -14,7 +14,7 @@
 	<script src="{{ url_for('static', filename='lib/datetimepicker-master/jquery.datetimepicker.js') }}"></script>
 	
 	<!-- mes scripts -->
-	<link rel="shortcut icon" href="favicon.ico">
+	<link rel="shortcut icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" media="screen">
 </head>
 <body>
@@ -26,19 +26,21 @@
 				<a class="menu__element__link menu__element__link--active" href="{{ url_for('presences') }}">Presences</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
 			</li>
+            <!--
             <li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Plannings</a>
 			</li>
+			-->
 			<li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('rooms') }}">Rooms</a>
 			</li>
-			<li class="menu__element">
-				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
+            <li class="menu__element">
+				<a class="menu__element__link" href="{{ url_for('schedulings') }}">Importation</a>
 			</li>
 		</ul>
 	</nav>
@@ -67,13 +69,13 @@
 		<button class="form__element form__element--submit" type="submit">Filtrer</button>
 	</form>
     <table class="list list--presences" width="100%">
-        <tr>
-            <th>Date</th>
-            <th>Promotion</th>
-            <th>Nom</th>
-            <th>Heure d'arrivée</th>
-        </tr>
         {% if presences %}
+            <tr>
+                <th>Date</th>
+                <th>Promotion</th>
+                <th>Nom</th>
+                <th>Heure d'arrivée</th>
+            </tr>
             {% for presence in presences %}
                 <tr>
                     <td>{{ presence.date.strftime('%d/%m/%Y') }}</td>
@@ -84,7 +86,7 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="4">Aucun utilisateur trouver</td>
+                <td>Aucun utilisateur trouver</td>
             </tr>
         {% endif %}
     </table>
