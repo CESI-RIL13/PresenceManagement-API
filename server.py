@@ -126,26 +126,18 @@ def users(identifiant=None):
 
         elif request.method == 'POST' or request.method == 'PUT':
 
-            if request.headers['Accept'].split(',')[0] == 'text/html':
-                file = request.files['file']
-                if file and allowed_file(file.filename):
-                    filename = secure_filename(file.filename)
-                    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-                    return redirect(url_for('uploaded_file',filename=filename))
+            entities = jsonpickle.decode(request.data)
+            users = []
+            for entity in entities:
+                user = User()
+                user.fromJson(entity)
+                try:
+                    user.save()
+                except Error, e:
+                    return e.value,e.code
 
-            else:
-                entities = jsonpickle.decode(request.data)
-                users = []
-                for entity in entities:
-                    user = User()
-                    user.fromJson(entity)
-                    try:
-                        user.save()
-                    except Error, e:
-                        return e.value,e.code
-
-                    users.append(user.id)
-                return jsonpickle.encode(users,unpicklable=False),201
+                users.append(user.id)
+            return jsonpickle.encode(users,unpicklable=False),201
 
 @app.route('/presences/', methods = ['GET', 'POST'])
 def presences():

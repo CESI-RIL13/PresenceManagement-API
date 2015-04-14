@@ -407,9 +407,8 @@ class User(Entity) :
                     raise Error(400,"Error occuring processing the request")
             file_object.close()
             os.remove(self.fullname+".png")
-            return True
 
-        if hasattr(self,'promotion_id') and self.load() and self.role == 'stagiaire':
+        if hasattr(self,'promotion_id') and self.role == 'stagiaire':
             promotions = self.getPromotion()
             for promotion in promotions:
                 print promotion.id
