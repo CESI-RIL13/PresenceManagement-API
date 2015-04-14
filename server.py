@@ -41,22 +41,21 @@ def detect_auth_client():
     if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
         return redirect(url_for('login'))
 
-@app.before_request
-def connect_db():
-    # cfg = ConfigParser.ConfigParser()
-    # cfg.read('conf.ini')
-    #
-    # connexion = MySQLdb.connect(host=cfg.get('SQL','hostIP'), # your host, usually localhost
-    #                             port=int(cfg.get('SQL','port')),
-    #                             user=cfg.get('SQL','user'), # your username
-    #                             passwd=cfg.get('SQL','password'), # your password
-    #                             db=cfg.get('SQL','database'),
-    #                             charset='utf8') # name of the data base
-    #
-    # # you must create a Cursor object. It will let
-    # #  you execute all the queries you need
-    # curseur = connexion.cursor(MySQLdb.cursors.DictCursor)
+# @app.before_request
+# def connect_db():
+#     cfg = ConfigParser.ConfigParser()
+# cfg.read('conf.ini')
+#
+# connexion = MySQLdb.connect(host=cfg.get('SQL','hostIP'), # your host, usually localhost
+#                             port=int(cfg.get('SQL','port')),
+#                             user=cfg.get('SQL','user'), # your username
+#                             passwd=cfg.get('SQL','password'), # your password
+#                             db=cfg.get('SQL','database'),
+#                             charset='utf8') # name of the data base
 
+# you must create a Cursor object. It will let
+#  you execute all the queries you need
+curseur = connexion.cursor(MySQLdb.cursors.DictCursor)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
@@ -352,7 +351,7 @@ def imports(type=None):
         else :
             if request.headers['Accept'].split(',')[0] == 'text/html':
                 flash('Choisissez un type d\'importation','error')
-                return redirect(url_for('imports'),400)
+                return redirect(url_for('imports'))
             else:
                 return "Specified type of the import",400
 
@@ -373,7 +372,7 @@ def imports(type=None):
                     except ImportationError:
                         if request.headers['Accept'].split(',')[0] == 'text/html':
                             flash('Mauvais type de fichier','error')
-                            return redirect(url_for('imports'),400)
+                            return redirect(url_for('imports'))
                         else:
                             return "Mauvais type de fichier",400
 
@@ -386,7 +385,7 @@ def imports(type=None):
                             except Error, e:
                                 if request.headers['Accept'].split(',')[0] == 'text/html':
                                     flash(e.value,'error')
-                                    return redirect(url_for('imports'),400)
+                                    return redirect(url_for('imports'))
                                 else:
                                     return e.value,e.code
                     try:
@@ -394,7 +393,7 @@ def imports(type=None):
                     except ImportationError:
                         if request.headers['Accept'].split(',')[0] == 'text/html':
                             flash('Mauvais type de fichier','error')
-                            return redirect(url_for('imports'),400)
+                            return redirect(url_for('imports'))
                         else:
                             return "Mauvais type de fichier",400
 
@@ -407,14 +406,14 @@ def imports(type=None):
                         except Error, e:
                             if request.headers['Accept'].split(',')[0] == 'text/html':
                                 flash(e.value,'error')
-                                return redirect(url_for('imports'),400)
+                                return redirect(url_for('imports'))
                             else:
                                 return e.value,e.code
 
                         users.append(user.id)
                     if request.headers['Accept'].split(',')[0] == 'text/html':
                         flash(str(len(users)) + ' utilisateurs ont été importé','success')
-                        return redirect(url_for('imports'),201)
+                        return redirect(url_for('imports'))
                     else:
                         return jsonpickle.encode(users,unpicklable=False),201
 
@@ -440,7 +439,7 @@ def imports(type=None):
                             except Error, e:
                                 if request.headers['Accept'].split(',')[0] == 'text/html':
                                     flash(e.value,'error')
-                                    return redirect(url_for('imports')),400
+                                    return redirect(url_for('imports'))
                                 else:
                                     return e.value,e.code
                     try:
@@ -449,7 +448,7 @@ def imports(type=None):
                         print e
                         if request.headers['Accept'].split(',')[0] == 'text/html':
                             flash('Mauvais type de fichier','error')
-                            return redirect(url_for('imports')),400
+                            return redirect(url_for('imports'))
                         else:
                             return "Mauvais type de fichier",400
 
@@ -462,7 +461,7 @@ def imports(type=None):
                         except Error, e:
                             if request.headers['Accept'].split(',')[0] == 'text/html':
                                 flash(e.value,'error')
-                                return redirect(url_for('imports')),400
+                                return redirect(url_for('imports'))
                             else:
                                 return e.value,e.code
 
@@ -477,11 +476,12 @@ def imports(type=None):
 
             except Error, e:
                 return e.value, e.code
+            os.remove(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         else:
             if request.headers['Accept'].split(',')[0] == 'text/html':
                 flash('Aucun fichier, fournir un fichier CSV','error')
-                return redirect(url_for('imports')),400
+                return redirect(url_for('imports'))
             else:
                 return "Not file provided, please provide a CSV file",400
 
