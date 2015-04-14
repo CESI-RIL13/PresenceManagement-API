@@ -8,6 +8,14 @@ import unicodedata
 from models import *
 from time import mktime
 
+class ImportationError(Exception):
+     def __init__(self, code, value):
+        self.value = value
+        self.code = code
+
+     def __str__(self):
+         return repr(self.value)
+
 class Importation:
     def __init__(self, nomFichier):
         self.nomFichier=nomFichier
@@ -82,92 +90,107 @@ class Importation:
                 champsImportes.clear()
 
     def importRooms(self):
-        tabRooms=[]
-        tabRoomsExistantes=[]
-        for scheduling in self.data:
-            if not Importation.isPresent(tabRooms, scheduling["scheduling.room_name"]) and not Importation.isPresent(tabRoomsExistantes,scheduling["scheduling.room_name"]):
-                room=Room()
-                try:
-                    room.search({"name" : scheduling["scheduling.room_name"]})
-                    tabRoomsExistantes.append({"name" : scheduling["scheduling.room_name"], "add" : False})
-                except Error,e:
-                    if e.code == 404:
-                        tabRooms.append({"name" : scheduling["scheduling.room_name"]})
+        try :
+            tabRooms=[]
+            tabRoomsExistantes=[]
+            for scheduling in self.data:
+                if not Importation.isPresent(tabRooms, scheduling["scheduling.room_name"]) and not Importation.isPresent(tabRoomsExistantes,scheduling["scheduling.room_name"]):
+                    room=Room()
+                    try:
+                        room.search({"name" : scheduling["scheduling.room_name"]})
+                        tabRoomsExistantes.append({"name" : scheduling["scheduling.room_name"], "add" : False})
+                    except Error,e:
+                        if e.code == 404:
+                            tabRooms.append({"name" : scheduling["scheduling.room_name"]})
 
-        print(tabRooms)
-        return jsonpickle.encode(tabRooms)
+            print(tabRooms)
+            return jsonpickle.encode(tabRooms)
+        except:
+            raise ImportationError(400,'bad file!')
 
     def importSchedulings(self):
-        schedulings=[]
-        rooms={}
-        users={}
-        room=Room()
-        user=User()
-        for planning in self.data:
-            # planning={}
-            scheduling={}
-            planning["scheduling.date"]=str(planning["scheduling.date"]).split('. ')[1]
-            # print planning["scheduling.date"]
-            heures=str(planning["scheduling.heure"]).split(" / ")
-            # print heures
+        try:
+            schedulings=[]
+            rooms={}
+            users={}
+            room=Room()
+            user=User()
+            for planning in self.data:
+                # planning={}
+                scheduling={}
+                planning["scheduling.date"]=str(planning["scheduling.date"]).split('. ')[1]
+                # print planning["scheduling.date"]
+                heures=str(planning["scheduling.heure"]).split(" / ")
+                # print heures
 
-            from_dateStart=planning["scheduling.date"]+ " " + heures[0]
-            scheduling["date_start"] = str(mktime(datetime.strptime(from_dateStart,"%d/%m/%y %H:%M").timetuple()))
-            from_dateEnd=planning["scheduling.date"] + " " + heures[1]
-            scheduling["date_end"]= str(mktime(datetime.strptime(from_dateEnd,"%d/%m/%y %H:%M").timetuple()))
+                from_dateStart=planning["scheduling.date"]+ " " + heures[0]
+                scheduling["date_start"] = str(mktime(datetime.strptime(from_dateStart,"%d/%m/%y %H:%M").timetuple()))
+                from_dateEnd=planning["scheduling.date"] + " " + heures[1]
+                scheduling["date_end"]= str(mktime(datetime.strptime(from_dateEnd,"%d/%m/%y %H:%M").timetuple()))
 
-            if not planning["scheduling.room_name"] in rooms:
-                entity = room.search({"name" : planning["scheduling.room_name"]})
-                rooms[planning["scheduling.room_name"]]= entity[0].id
-            scheduling["room_id"]=str(rooms[planning["scheduling.room_name"]])
+                if not planning["scheduling.room_name"] in rooms:
+                    entity = room.search({"name" : planning["scheduling.room_name"]})
+                    rooms[planning["scheduling.room_name"]]= entity[0].id
+                scheduling["room_id"]=str(rooms[planning["scheduling.room_name"]])
 
-            if 'scheduling.user_name' in planning.keys():
-                if not planning["scheduling.user_name"] in users:
-                    entity = user.search({"fullname" : planning["scheduling.user_name"]})
-                    users[planning["scheduling.user_name"]]= entity[0].id
-                scheduling["user_id"]=users[planning["scheduling.user_name"]]
+                if 'scheduling.user_name' in planning.keys():
+                    if not planning["scheduling.user_name"] in users:
+                        entity = user.search({"fullname" : planning["scheduling.user_name"]})
+                        users[planning["scheduling.user_name"]]= entity[0].id
+                    scheduling["user_id"]=users[planning["scheduling.user_name"]]
 
-            scheduling["promotion_id"]=planning["scheduling.promotion_id"]
+                scheduling["promotion_id"]=planning["scheduling.promotion_id"]
 
-            if planning.has_key("scheduling.course"):
-                scheduling["course"] = planning["scheduling.course"]
+                if planning.has_key("scheduling.course"):
+                    scheduling["course"] = planning["scheduling.course"]
 
-            schedulings.append(scheduling)
+                schedulings.append(scheduling)
 
-        print(schedulings)
-        return jsonpickle.encode(schedulings)
+            print(schedulings)
+            return jsonpickle.encode(schedulings)
+        except:
+            raise ImportationError(400,'bad file!')
 
     def importPromo(self):
-        tabPromo=[]
-        for utilisateur in self.data:
-            promotion = Promotion()
-            promotion.id = utilisateur["user.promotion_id"]
-            try:
-                promotion.load()
-            except Error, e:
-                if e.code == 404:
-                    name=str(utilisateur["promotion.name"]).split(" ")
-                    # print(name)
-                    tabPromo.append({"id" : utilisateur["user.promotion_id"], "name" : name[0] + name[1]})
-                    # print(tabPromo)
+        try:
+            tabPromo=[]
+            for utilisateur in self.data:
+                promotion = Promotion()
+                promotion.id = utilisateur["user.promotion_id"]
+                try:
+                    promotion.load()
+                except Error, e:
+                    if e.code == 404:
+                        name=str(utilisateur["promotion.name"]).split(" ")
+                        # print(name)
+                        tabPromo.append({"id" : utilisateur["user.promotion_id"], "name" : name[0] + name[1]})
+                        # print(tabPromo)
 
-        return jsonpickle.encode(tabPromo)
+            return jsonpickle.encode(tabPromo)
+        except:
+            raise ImportationError(400,'bad file!')
 
     def importUsers(self):
-        users=[]
-        for utilisateur in self.data:
-            # utilisateur={}
-            user={}
-            # print(utilisateur)
-            utilisateur["user.fullname"] = utilisateur["user.firstname"] + " " + utilisateur["user.name"]
-            utilisateur["user.role"]="stagiaire"
-            del utilisateur["user.name"]
-            del utilisateur["user.firstname"]
-            # print(utilisateur)
-            for clef,valeur in utilisateur.items():
-                key=str(clef).split('.')
-                if key[0] == "user":
-                    user[key[1]]=valeur
-            # print user
-            users.append(user)
-        return jsonpickle.encode(users)
+        try:
+            users=[]
+            for utilisateur in self.data:
+                # utilisateur={}
+                user={}
+                # print(utilisateur)
+                utilisateur["user.fullname"] = utilisateur["user.firstname"] + " " + utilisateur["user.name"]
+                if utilisateur["user.promotion_id"] == "":
+                    utilisateur["user.role"]="intervenant"
+                else:
+                    utilisateur["user.role"]="stagiaire"
+                del utilisateur["user.name"]
+                del utilisateur["user.firstname"]
+                # print(utilisateur)
+                for clef,valeur in utilisateur.items():
+                    key=str(clef).split('.')
+                    if key[0] == "user":
+                        user[key[1]]=valeur
+                # print user
+                users.append(user)
+            return jsonpickle.encode(users)
+        except:
+            raise ImportationError(400,'bad file!')

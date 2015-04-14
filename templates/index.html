@@ -13,6 +13,13 @@
 	<img src="{{ url_for('static', filename='img/logo-cesialternance.png') }}" width="250" height="85">
 </header>
 <div class="bloc bloc--content">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <p class="{{ category }}">{{ message }}</p>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 	<form class="connexion" action="{{ url_for('login')}}"  method="POST">
 			<label>Identifiant</label>
 			<input class="connexion__element" type="text" name="mail">
