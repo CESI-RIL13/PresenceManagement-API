@@ -178,7 +178,10 @@ class Importation:
                 user={}
                 # print(utilisateur)
                 utilisateur["user.fullname"] = utilisateur["user.firstname"] + " " + utilisateur["user.name"]
-                utilisateur["user.role"]="stagiaire"
+                if utilisateur["user.promotion_id"] == "":
+                    utilisateur["user.role"]="intervenant"
+                else:
+                    utilisateur["user.role"]="stagiaire"
                 del utilisateur["user.name"]
                 del utilisateur["user.firstname"]
                 # print(utilisateur)

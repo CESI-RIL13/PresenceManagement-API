@@ -330,7 +330,7 @@ def imports(type=None):
             type = request.form['type']
         else :
             if request.headers['Accept'].split(',')[0] == 'text/html':
-               return render_template('imports.html', message = "Specified type of the import"),400
+               return render_template('imports.html', message = "Choisissez un type d'importation"),400
             else:
                 return "Specified type of the import",400
 
@@ -429,7 +429,7 @@ def imports(type=None):
 
         else:
             if request.headers['Accept'].split(',')[0] == 'text/html':
-               return render_template('imports.html', message = "Not file provided, please provide a CSV file"),400
+               return render_template('imports.html', message = "Aucun fichier, fournir un fichier CSV"),400
             else:
                 return "Not file provided, please provide a CSV file",400
 
