@@ -38,8 +38,8 @@ def detect_auth_client():
     if request.endpoint == 'static':
         return
 
-    #if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
-     #   return redirect(url_for('login'))
+    if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
+        return redirect(url_for('login'))
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -309,10 +309,23 @@ def rooms(identifiant=None):
                 rooms.append(room.id)
             return jsonpickle.encode(rooms,unpicklable=False),201
 
+@app.route('/imports/', methods = ['GET','POST','PUT'])
 @app.route('/imports/<type>', methods = ['POST', 'PUT'])
 def imports(type=None):
+    error = {"messages":[]}
 
-    if request.method == 'POST' or request.method == 'PUT':
+    if request.method == 'GET' and request.headers['Accept'].split(',')[0] == 'text/html':
+        return render_template('imports.html')
+
+    elif request.method == 'POST' or request.method == 'PUT':
+
+        if not type and request.form['type']:
+            type = request.form['type']
+        else :
+            if request.headers['Accept'].split(',')[0] == 'text/html':
+               return render_template('imports.html', message = "Specified type of the import"),400
+            else:
+                return "Specified type of the import",400
 
         file = request.files['file']
 
@@ -326,7 +339,13 @@ def imports(type=None):
                 if(type=="users"):
 
                     importation.importerCsv()
-                    promos = jsonpickle.decode(importation.importPromo())
+                    try:
+                        promos = jsonpickle.decode(importation.importPromo())
+                    except ImportationError:
+                        if request.headers['Accept'].split(',')[0] == 'text/html':
+                            return render_template('imports.html', message = "Mauvais type de fichier"),400
+                        else:
+                            return "Mauvais type de fichier",400
 
                     if len(promos) > 0:
                         for entity in promos:
@@ -338,9 +357,11 @@ def imports(type=None):
                                 return e.value,e.code
                     try:
                         entities = jsonpickle.decode(importation.importUsers())
-                    except Error,e:
-                        print e
-                        return e.value,400
+                    except ImportationError:
+                        if request.headers['Accept'].split(',')[0] == 'text/html':
+                           return render_template('imports.html', message = "Mauvais type de fichier"),400
+                        else:
+                            return "Mauvais type de fichier",400
 
                     users = []
                     for entity in entities:
@@ -359,7 +380,13 @@ def imports(type=None):
                 elif(type=="schedulings"):
                     importation.importerCsv()
 
-                    rooms = jsonpickle.decode(importation.importRooms())
+                    try:
+                        rooms = jsonpickle.decode(importation.importRooms())
+                    except ImportationError:
+                        if request.headers['Accept'].split(',')[0] == 'text/html':
+                            return render_template('imports.html', message = "Mauvais type de fichier"),400
+                        else:
+                            return "Mauvais type de fichier",400
 
                     if len(rooms) > 0:
                         for entity in rooms:
@@ -371,9 +398,11 @@ def imports(type=None):
                                 return e.value,e.code
                     try:
                         entities = jsonpickle.decode(importation.importSchedulings())
-                    except Error, e:
-                        print e
-                        return e.value,400
+                    except ImportationError:
+                        if request.headers['Accept'].split(',')[0] == 'text/html':
+                           return render_template('imports.html', message = "Mauvais type de fichier"),400
+                        else:
+                            return "Mauvais type de fichier",400
 
                     schedulings = []
                     for entity in entities:
@@ -392,7 +421,10 @@ def imports(type=None):
                 return e.value, e.code
 
         else:
-            return "not file provided or invalid file type",400
+            if request.headers['Accept'].split(',')[0] == 'text/html':
+               return render_template('imports.html', message = "Not file provided, please provide a CSV file"),400
+            else:
+                return "Not file provided, please provide a CSV file",400
 
     else:
         return 405

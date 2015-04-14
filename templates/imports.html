@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
 	<meta charset="utf-8">
-	<title>Participants</title>
+	<title>Présences</title>
 	<meta name="description" content="">
 	<meta name="author" content="øvnislash">
 
@@ -23,12 +23,12 @@
 	<nav>
 		<ul class="menu">
 			<li class="menu__element">
-				<a class="menu__element__link" href="{{ url_for('presences') }}">Presences</a>
+				<a class="menu__element__link menu__element__link--active" href="{{ url_for('presences') }}">Presences</a>
 			</li>
 			<li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('users') }}">Participants</a>
 			</li>
-			<li class="menu__element">
+            <li class="menu__element">
 				<a class="menu__element__link" href="{{ url_for('promotions') }}">Promotions</a>
 			</li>
 			<li class="menu__element">
@@ -38,32 +38,26 @@
 				<a class="menu__element__link" href="{{ url_for('rooms') }}">Rooms</a>
 			</li>
 			<li class="menu__element">
-				<a class="menu__element__link menu__element__link--active" href="{{ url_for('users') }}">Utilisateurs</a>
+				<a class="menu__element__link" href="{{ url_for('users') }}">Utilisateurs</a>
 			</li>
 		</ul>
 	</nav>
 </header>
-<div class="bloc bloc--content bloc--content--participants">
-	<form class="form" action="#"  method="GET">
-		<h2 class="form__title">Filtres</h2>
-		<input class="form__element form__element--name" type="text" name="fullname" placeholder="Nom">
-		<button class="form__element form__element--submit" type="submit">Filtrer</button>
+<div class="bloc bloc--content bloc--content--presences">
+    {% if message %}
+        <p class="error">{{ message }}</p>
+    {% endif %}
+	<form class="form form--filter" action="{{ url_for('imports') }}"  method="POST" enctype="multipart/form-data">
+		<h2 class="form__title">Imports</h2>
+		<input type="file" name="file">
+		<label>
+            <input type="radio" name="type" value="users" {{'%s' % 'checked=true' if request.form['type'] == 'users' or not request.form['type']}}> Utilisateur
+        </label>
+        <label>
+            <input type="radio" name="type" value="schedulings" {{'%s' % 'checked=true' if request.form['type'] == 'schedulings'}}> Planning
+        </label>
+		<button class="form__element form__element--submit" type="submit">Importer</button>
 	</form>
-	<table class="list list--participants" width="100%">
-		<tr>
-			<th>Nom</th>
-			<th>Email</th>
-			<th>Role</th>
-		</tr>
-        {% for user in users %}
-		<tr>
-			<td>{{ user.fullname }}</td>
-            <td>{{ user.mail }}</td>
-			<td>{{ user.role }}</td>
-		</tr>
-        {% endfor %}
-	</table>
 </div>
-<script src="js/script.js"></script>
 </body>
 </html>
