@@ -512,7 +512,7 @@ class Room(Entity) :
         if token == '' or token == None:
             return False
         try:
-            curseur.execute("SELECT raspberry_id FROM room")
+            curseur.execute("SELECT id, raspberry_id FROM room")
 
         except MySQLdb.Error, e:
             try:
@@ -526,12 +526,12 @@ class Room(Entity) :
             return False
         else:
             responses = curseur.fetchall()
-            for response in responses:
-                if response['raspberry_id'] == None and response['raspberry_id'] == '':
-                    continue
 
+            for response in responses:
+                if not response['raspberry_id'] or response['raspberry_id'] == '':
+                    continue
                 if pwd_context.verify(token, response['raspberry_id']):
-                    return True
+                    return response['id']
 
             return False
     authentification = staticmethod(authentification)
@@ -549,13 +549,17 @@ class Scheduling(Entity) :
         self.setHasOne('promotion')
         self.setBelongsTo('promotion')
 
-    def search(self, args = {},lastUpdate = None):
+    def search(self, args = {},lastUpdate = None,room_id = None):
+
         args = self._cleanArgs(args.copy())
+        if room_id :
+            args['room_id'] = room_id
+
         request = self._constructSelect()
         where = self._constructWhereClause(args,lastUpdate)
 
-        if args.keys().count('raspberry_id'):
-            where.append('room.raspberry_id ="%s"'%(args['raspberry_id']))
+        #if args.keys().count('raspberry_id'):
+            #where.append('room.raspberry_id ="%s"'%(args['raspberry_id']))
 
         if args.keys().count('date'):
             date = datetime.fromtimestamp(float(args['date'])).strftime("%Y-%m-%d")

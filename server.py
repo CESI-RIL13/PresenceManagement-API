@@ -38,24 +38,13 @@ def detect_auth_client():
     if request.endpoint == 'static':
         return
 
-    if (not request.headers.get('X-API-Client-Auth') or not Room().authentification(request.headers.get('X-API-Client-Auth'))) and request.endpoint != 'login':
+    room_id = Room().authentification(request.headers.get('X-API-Client-Auth'))
+
+    if (not request.headers.get('X-API-Client-Auth') or not room_id) and request.endpoint != 'login':
         return redirect(url_for('login'))
 
-# @app.before_request
-# def connect_db():
-#     cfg = ConfigParser.ConfigParser()
-# cfg.read('conf.ini')
-#
-# connexion = MySQLdb.connect(host=cfg.get('SQL','hostIP'), # your host, usually localhost
-#                             port=int(cfg.get('SQL','port')),
-#                             user=cfg.get('SQL','user'), # your username
-#                             passwd=cfg.get('SQL','password'), # your password
-#                             db=cfg.get('SQL','database'),
-#                             charset='utf8') # name of the data base
+    session['room_id'] = str(room_id)
 
-# you must create a Cursor object. It will let
-#  you execute all the queries you need
-curseur = connexion.cursor(MySQLdb.cursors.DictCursor)
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
 
@@ -258,7 +247,7 @@ def promotions(identifiant=None):
 def schedulings():
     if request.method == 'GET':
         try:
-            return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+            return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since'),session['room_id']),unpicklable=False),200
         except Error, e:
             return e.value,e.code
 
