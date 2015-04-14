@@ -1,4 +1,14 @@
-Code session,Code de l'eleve,Code analytique,Nom commercial produit,Nom de la session,Date de debut de la session,Date de fin de la session,Civilite de l'eleve,Nom de l'eleve,Prenom de l'eleve,Date de debut de l'inscription,Date de fin de l'inscription,Adresse mail,Mot de passe
-1454602,1433361,BO464204,RESPONSABLE ADMINISTRATEUR DE RESEAUX D'ENTREPRISE,RARE 14 BX 09,20/10/2014,13/09/2016,Monsieur,LORGERIE,DENIS,24/11/2014,13/09/2016,denis.lorgerie@viacesi.fr,
-1454602,69696969,BO364204,on s'en fout,RIL 13 BX 08,20/10/2014,13/09/2016,Monsieur,HENRY,TOTO,24/11/2014,13/09/2016,toto.henry@viacesi.fr,
-1454602,4242424242,BO424242,ranafout,RARE 42 BX 45,20/10/2014,13/09/2016,Monsieur,DOS SANTOS,JULIEN,24/11/2014,13/09/2016,adresse@viacesi.fr,
+﻿Code session,Code de l'eleve,Code analytique,Nom commercial produit,Nom de la session,Date de debut de la session,Date de fin de la session,Civilite de l'eleve,Nom de l'eleve,Prenom de l'eleve,Date de debut de l'inscription,Date de fin de l'inscription,Adresse mail,Mot de passe
+1454602,1433361,BO364204,RESPONSABLE EN INGENIERIE DES LOGICIELS,RILA 14 BX 09,20/10/2014,13/09/2016,Monsieur,BUR,Jean-Vincent,20/10/2014,13/09/2016,jeanvincent.bur@viacesi.fr,
+1454602,69696969,BO364204,RESPONSABLE EN INGENIERIE DES LOGICIELS,RILA 14 BX 09,20/10/2014,13/09/2016,Monsieur,CARLESSO,Mathieu,20/10/2014,13/09/2016,mathieu.carlesso@viacesi.fr,
+1454602,4242424242,BO364204,RESPONSABLE EN INGENIERIE DES LOGICIELS,RILA 14 BX 09,20/10/2014,13/09/2016,Monsieur,DOS SANTOS,Julien,20/10/2014,13/09/2016,julien.dossantos@viacesi.fr,
+1454602,12345678901,BO364204,RESPONSABLE EN INGENIERIE DES LOGICIELS,RILA 14 BX 09,20/10/2014,13/09/2016,Monsieur,HERMEL,Nicolas,20/10/2014,13/09/2016,nicolas.hermel@viacesi.fr,
+1454602,12345678902,BO364204,RESPONSABLE EN INGENIERIE DES LOGICIELS,RILA 14 BX 09,20/10/2014,13/09/2016,Monsieur,MOIZEAU,Cedric,20/10/2014,13/09/2016,cedric.moizeau@viacesi.fr,
+1454602,12345678903,,,,,,Monsieur,TOUCHARD,Benjamin,20/10/2010,,btouchard@gmail.com,
+1454602,12345678904,,,,,,Monsieur,DANDIEU,Jean-Michel,20/10/2010,,jdandieu@gmail.com,
+1454602,12345678905,,,,,,Monsieur,CABRIT,Alexandre,20/10/2012,,acabrit@gmail.com,
+1454602,12345678906,,,,,,Monsieur,BEINCHET,Olivier,20/10/2010,,obeinchet@gmail.com,
+1454602,12345678907,,,,,,Monsieur,AMET,Stephane,20/10/2010,,samet@cesi.fr,
+1454602,12345678908,,,,,,Monsieur,LEGRAND,Romain,20/10/2010,,rlegrand@gmail.com,
+1454602,12345678909,,,,,,Monsieur,PY,Patrick,20/10/2010,,ppy@gmail.com,
+1454602,12345678910,,,,,,Monsieur,BANOS,Didier,20/10/2010,,dbanos@gmail.com,

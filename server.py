@@ -333,7 +333,6 @@ def rooms(identifiant=None):
 @app.route('/imports/', methods = ['GET','POST','PUT'])
 @app.route('/imports/<type>', methods = ['POST', 'PUT'])
 def imports(type=None):
-    error = {"messages":[]}
 
     if request.method == 'GET' and request.headers['Accept'].split(',')[0] == 'text/html':
         return render_template('imports.html')
@@ -345,7 +344,7 @@ def imports(type=None):
         else :
             if request.headers['Accept'].split(',')[0] == 'text/html':
                 flash('Choisissez un type d\'importation','error')
-                return redirect(url_for('imports')),400
+                return redirect(url_for('imports'),400)
             else:
                 return "Specified type of the import",400
 
@@ -366,7 +365,7 @@ def imports(type=None):
                     except ImportationError:
                         if request.headers['Accept'].split(',')[0] == 'text/html':
                             flash('Mauvais type de fichier','error')
-                            return redirect(url_for('imports')),400
+                            return redirect(url_for('imports'),400)
                         else:
                             return "Mauvais type de fichier",400
 
@@ -379,7 +378,7 @@ def imports(type=None):
                             except Error, e:
                                 if request.headers['Accept'].split(',')[0] == 'text/html':
                                     flash(e.value,'error')
-                                    return redirect(url_for('imports')),400
+                                    return redirect(url_for('imports'),400)
                                 else:
                                     return e.value,e.code
                     try:
@@ -387,7 +386,7 @@ def imports(type=None):
                     except ImportationError:
                         if request.headers['Accept'].split(',')[0] == 'text/html':
                             flash('Mauvais type de fichier','error')
-                            return redirect(url_for('imports')),400
+                            return redirect(url_for('imports'),400)
                         else:
                             return "Mauvais type de fichier",400
 
@@ -400,14 +399,14 @@ def imports(type=None):
                         except Error, e:
                             if request.headers['Accept'].split(',')[0] == 'text/html':
                                 flash(e.value,'error')
-                                return redirect(url_for('imports')),400
+                                return redirect(url_for('imports'),400)
                             else:
                                 return e.value,e.code
 
                         users.append(user.id)
                     if request.headers['Accept'].split(',')[0] == 'text/html':
-                        flash(len(users) + ' utilisateurs ont été importé','success')
-                        return redirect(url_for('imports')),400
+                        flash(str(len(users)) + ' utilisateurs ont été importé','success')
+                        return redirect(url_for('imports'),201)
                     else:
                         return jsonpickle.encode(users,unpicklable=False),201
 
@@ -416,7 +415,8 @@ def imports(type=None):
 
                     try:
                         rooms = jsonpickle.decode(importation.importRooms())
-                    except ImportationError:
+                    except ImportationError,e:
+                        print e
                         if request.headers['Accept'].split(',')[0] == 'text/html':
                             flash('Mauvais type de fichier','error')
                             return redirect(url_for('imports')),400
@@ -437,7 +437,8 @@ def imports(type=None):
                                     return e.value,e.code
                     try:
                         entities = jsonpickle.decode(importation.importSchedulings())
-                    except ImportationError:
+                    except ImportationError, e:
+                        print e
                         if request.headers['Accept'].split(',')[0] == 'text/html':
                             flash('Mauvais type de fichier','error')
                             return redirect(url_for('imports')),400
@@ -460,8 +461,8 @@ def imports(type=None):
                         schedulings.append(scheduling.id)
 
                     if request.headers['Accept'].split(',')[0] == 'text/html':
-                        flash(len(schedulings) + ' planning ont été importé','success')
-                        return redirect(url_for('imports')),400
+                        flash(str(len(schedulings)) + ' planning ont été importé','success')
+                        return redirect(url_for('imports'),201)
                     else:
                         return jsonpickle.encode(schedulings,unpicklable=False),201
                     #return 'test',200

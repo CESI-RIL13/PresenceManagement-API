@@ -1,5 +1,5 @@
 BO364204
-Date,Heure,Matière,Option,Salle,Intervenant
+Date,Heure,Matiere,Option,Salle,Intervenant
 lun. 14/10/13,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
 lun. 14/10/13,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
 mar. 15/10/13,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
@@ -8,10 +8,10 @@ mer. 16/10/13,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel 
 mer. 16/10/13,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
 jeu. 17/10/13,08:30 / 12:30,Veille technologique,T.C.,Mont de Marsan,Alexandre CABRIT
 jeu. 17/10/13,13:30 / 17:30,Veille technologique,T.C.,Mont de Marsan,Alexandre CABRIT
-ven. 18/10/13,08:30 / 12:30,Architecture des systèmes i,T.C.,Mont de Marsan,Olivier BEINCHET
-ven. 18/10/13,13:30 / 16:30,Architecture des systèmes i,T.C.,Mont de Marsan,Olivier BEINCHET
-lun. 04/11/13,08:30 / 12:30,Initialisation du programme,T.C.,Brive,Stéphane AMET
-lun. 04/11/13,13:30 / 17:30,Initialisation du programme,T.C.,Brive,Stéphane AMET
+ven. 18/10/13,08:30 / 12:30,Architecture des syst�mes i,T.C.,Mont de Marsan,Olivier BEINCHET
+ven. 18/10/13,13:30 / 16:30,Architecture des syst�mes i,T.C.,Mont de Marsan,Olivier BEINCHET
+lun. 04/11/13,08:30 / 12:30,Initialisation du programme,T.C.,Brive,Stephane AMET
+lun. 04/11/13,13:30 / 17:30,Initialisation du programme,T.C.,Brive,Stephane AMET
 mar. 05/11/13,08:30 / 12:30,CISCO (cursus CCNA),T.C.,Brive,
 mar. 05/11/13,13:30 / 17:30,CISCO (cursus CCNA),T.C.,Brive,
 mer. 06/11/13,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
@@ -56,3 +56,5 @@ ven. 21/02/14,08:30 / 12:30,Gestion de projet,T.C.,Brive,Didier BANOS
 ven. 21/02/14,08:30 / 12:30,,,Cap-Ferret,
 ven. 21/02/14,13:30 / 16:30,Gestion de projet,T.C.,Brive,Didier BANOS
 ven. 21/02/14,13:30 / 16:30,,,Cap-Ferret,
+mar. 14/04/15,08:30 / 12:30,Projet Raspberry,T.C,Cap-Ferret,Stephane AMET
+mar. 14/04/15,13:30 / 17:30,Projet Raspberry,T.C,Cap-Ferret,Stephane AMET

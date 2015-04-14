@@ -109,7 +109,7 @@ class Importation:
             raise ImportationError(400,'bad file!')
 
     def importSchedulings(self):
-        try:
+        #try:
             schedulings=[]
             rooms={}
             users={}
@@ -148,8 +148,8 @@ class Importation:
 
             print(schedulings)
             return jsonpickle.encode(schedulings)
-        except:
-            raise ImportationError(400,'bad file!')
+#        except:
+ #           raise ImportationError(400,'bad file!')
 
     def importPromo(self):
         try:
