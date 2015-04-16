@@ -429,6 +429,31 @@ class User(Entity) :
         connexion.commit()
         return True
 
+    def search(self, args = {}, lastUpdate = None, clientpi = None):
+
+        if (clientpi) :
+
+            # 2 trucs : virer qrcode & rajouter promotion_id
+
+            args = self._cleanArgs(args.copy())
+            request = self._constructSelect()
+            where = self._constructWhereClause(args,lastUpdate)
+
+            if(len(where)>0):
+                request += " WHERE " + " AND ".join(where)
+
+            return self._executeSearch(request)
+
+        else :
+            args = self._cleanArgs(args.copy())
+            request = self._constructSelect()
+            where = self._constructWhereClause(args,lastUpdate)
+
+            if(len(where)>0):
+                request += " WHERE " + " AND ".join(where)
+
+            return self._executeSearch(request)
+
 class Presence(Entity) :
     def __init__(self):
         Entity.__init__(self,'presence')

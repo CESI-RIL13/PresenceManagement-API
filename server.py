@@ -38,12 +38,9 @@ def detect_auth_client():
     if request.endpoint == 'static':
         return
 
-    room_id = Room().authentification(request.headers.get('X-API-Client-Auth'))
-
-    if (not request.headers.get('X-API-Client-Auth') or not room_id) and request.endpoint != 'login':
-        return redirect(url_for('login'))
-
-    session['room_id'] = str(room_id)
+    if request.headers.get('X-API-Client-Auth') and request.endpoint != 'login':
+        session['room_id'] = Room().authentification(request.headers.get('X-API-Client-Auth'))
+        return
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
@@ -138,7 +135,7 @@ def users(identifiant=None):
 
             else:
                 try:
-                    return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
+                    return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since'), True),unpicklable=False),200
                 except Error, e:
                     return e.value,e.code
 
