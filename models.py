@@ -201,6 +201,8 @@ class Entity(object) :
     def __getstate__(self):
         entity = {}
         for column in self.getColumns():
+            if self.getTable() == 'user' and (column == 'password' or column == 'qrcode'):
+                continue
             entity[column] = getattr(self,column)
         return entity
 
@@ -284,7 +286,7 @@ class Entity(object) :
 
         result = []
         for row in rows:
-            entity = Entity(self.getTable())
+            entity = getattr(__import__('models'),self.getTable().title())()
             entity.id = row['id']
             entity.load()
             result.append(entity)
@@ -429,30 +431,34 @@ class User(Entity) :
         connexion.commit()
         return True
 
-    def search(self, args = {}, lastUpdate = None, clientpi = None):
+    def load(self):
 
-        if (clientpi) :
+        if self.id == None or self.id == "":
+            raise Error(400,"No id providing to manage the request")
 
-            # 2 trucs : virer qrcode & rajouter promotion_id
+        try:
+            curseur.execute("SELECT user.*,user_has_promotion.promotion_id FROM " + self.getTable() +" LEFT JOIN user_has_promotion ON user.id=user_has_promotion.user_id WHERE id='%s' and (user_has_promotion.current = %s OR user_has_promotion.current IS NULL)"%(self.id,1))
 
-            args = self._cleanArgs(args.copy())
-            request = self._constructSelect()
-            where = self._constructWhereClause(args,lastUpdate)
+        except MySQLdb.Error, e:
+            try:
+                print "MySQL Error [%d]: %s" % (e.args[0], e.args[1])
+                raise Error(400,"Error processing request")
+            except IndexError:
+                print "MySQL Error: %s" % str(e)
+                raise Error(400, "Error processing request")
 
-            if(len(where)>0):
-                request += " WHERE " + " AND ".join(where)
+        if curseur.rowcount == 0 :
+            raise Error(404,"Nothing found matching the request")
 
-            return self._executeSearch(request)
+        datas = curseur.fetchone()
 
-        else :
-            args = self._cleanArgs(args.copy())
-            request = self._constructSelect()
-            where = self._constructWhereClause(args,lastUpdate)
+        for column in self.getColumns():
+            setattr(self,column,datas[column])
 
-            if(len(where)>0):
-                request += " WHERE " + " AND ".join(where)
+        self.setColumn('promotion_id')
+        setattr(self,'promotion_id',datas['promotion_id'])
 
-            return self._executeSearch(request)
+        return True
 
 class Presence(Entity) :
     def __init__(self):

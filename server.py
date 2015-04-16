@@ -135,7 +135,7 @@ def users(identifiant=None):
 
             else:
                 try:
-                    return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since'), True),unpicklable=False),200
+                    return jsonpickle.encode(User().search(request.args,request.headers.get('If-Modified-Since')),unpicklable=False),200
                 except Error, e:
                     return e.value,e.code
 
