@@ -244,7 +244,7 @@ def promotions(identifiant=None):
 def schedulings():
     if request.method == 'GET':
         try:
-            return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since'),session['room_id']),unpicklable=False),200
+            return jsonpickle.encode(Scheduling().search(request.args,request.headers.get('If-Modified-Since'),str(session['room_id'])),unpicklable=False),200
         except Error, e:
             return e.value,e.code
 

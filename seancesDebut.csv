@@ -1,58 +1,8 @@
 BO364204
 Date,Heure,Matiere,Option,Salle,Intervenant
-lun. 14/10/13,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
-lun. 14/10/13,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
-mar. 15/10/13,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
-mar. 15/10/13,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
-mer. 16/10/13,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
-mer. 16/10/13,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
-jeu. 17/10/13,08:30 / 12:30,Veille technologique,T.C.,Mont de Marsan,Alexandre CABRIT
-jeu. 17/10/13,13:30 / 17:30,Veille technologique,T.C.,Mont de Marsan,Alexandre CABRIT
-ven. 18/10/13,08:30 / 12:30,Architecture des systèmes i,T.C.,Mont de Marsan,Olivier BEINCHET
-ven. 18/10/13,13:30 / 16:30,Architecture des systèmes i,T.C.,Mont de Marsan,Olivier BEINCHET
-lun. 04/11/13,08:30 / 12:30,Initialisation du programme,T.C.,Brive,Stéphane AMET
-lun. 04/11/13,13:30 / 17:30,Initialisation du programme,T.C.,Brive,Stéphane AMET
-mar. 05/11/13,08:30 / 12:30,CISCO (cursus CCNA),T.C.,Brive,
-mar. 05/11/13,13:30 / 17:30,CISCO (cursus CCNA),T.C.,Brive,
-mer. 06/11/13,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-mer. 06/11/13,13:30 / 17:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-jeu. 07/11/13,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-jeu. 07/11/13,13:30 / 17:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-ven. 08/11/13,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-ven. 08/11/13,13:30 / 16:30,PHP,T.C.,Lacanau,
-lun. 02/12/13,08:30 / 12:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-lun. 02/12/13,13:30 / 17:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-mar. 03/12/13,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-mar. 03/12/13,13:30 / 17:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-mer. 04/12/13,08:30 / 12:30,CISCO (cursus CCNA),T.C.,Brive,Romain LEGRAND
-mer. 04/12/13,13:30 / 17:30,CISCO (cursus CCNA),T.C.,Brive,Romain LEGRAND
-jeu. 05/12/13,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-jeu. 05/12/13,13:30 / 17:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-ven. 06/12/13,08:30 / 12:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-ven. 06/12/13,13:30 / 16:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-lun. 13/01/14,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-lun. 13/01/14,13:30 / 17:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-mar. 14/01/14,08:30 / 12:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-mar. 14/01/14,13:30 / 17:30,PHP,T.C.,Lacanau,Benjamin TOUCHARD
-mer. 15/01/14,08:30 / 12:30,PHP,T.C.,Castillon,Benjamin TOUCHARD
-mer. 15/01/14,13:30 / 17:30,PHP,T.C.,Castillon,Benjamin TOUCHARD
-jeu. 16/01/14,08:30 / 12:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-jeu. 16/01/14,13:30 / 17:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-ven. 17/01/14,08:30 / 12:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-ven. 17/01/14,13:30 / 16:30,PHP,T.C.,ABCD10,Benjamin TOUCHARD
-lun. 17/02/14,08:30 / 12:30,Gestion de projet,T.C.,Brive,Patrick PY
-lun. 17/02/14,13:30 / 17:30,Gestion de projet,T.C.,Brive,Patrick PY
-mar. 18/02/14,08:30 / 12:30,Gestion de projet,T.C.,Lacanau,Didier BANOS
-mar. 18/02/14,08:30 / 12:30,,,Cap-Ferret,
-mar. 18/02/14,13:30 / 17:30,Gestion de projet,T.C.,Lacanau,Didier BANOS
-mar. 18/02/14,13:30 / 17:30,,,Cap-Ferret,
-mer. 19/02/14,08:30 / 12:30,Gestion de projet,T.C.,Brive,Didier BANOS
-mer. 19/02/14,08:30 / 12:30,,,Cap-Ferret,
-mer. 19/02/14,13:30 / 17:30,Gestion de projet,T.C.,Brive,Didier BANOS
-mer. 19/02/14,13:30 / 17:30,,,Cap-Ferret,
-jeu. 20/02/14,08:30 / 12:30,Gestion de projet,T.C.,Brive,Patrick PY
-jeu. 20/02/14,13:30 / 17:30,Gestion de projet,T.C.,Brive,Patrick PY
-ven. 21/02/14,08:30 / 12:30,Gestion de projet,T.C.,Brive,Didier BANOS
-ven. 21/02/14,08:30 / 12:30,,,Cap-Ferret,
-ven. 21/02/14,13:30 / 16:30,Gestion de projet,T.C.,Brive,Didier BANOS
-ven. 21/02/14,13:30 / 16:30,,,Cap-Ferret,
+lun. 18/05/15,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
+lun. 18/05/15,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
+mar. 19/05/15,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
+mar. 19/05/15,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
+mer. 20/05/15,08:30 / 12:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
+mer. 20/05/15,13:30 / 17:30,Dynamique de groupe,T.C.,Mont de Marsan,Jean-Michel DANDIEU
